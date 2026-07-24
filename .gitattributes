@@ -1,0 +1,2 @@
+# Keep public source and generated agent/hook files stable across Windows/macOS/Linux.
+* text=auto eol=lf

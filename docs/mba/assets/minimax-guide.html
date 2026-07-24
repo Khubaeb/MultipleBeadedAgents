@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beads v1.1.0 — Independent Field Guide</title>
+<style>
+  :root {
+    --bg: #0b1320;
+    --bg-2: #142037;
+    --bg-3: #1a2740;
+    --fg: #e2e8f0;
+    --fg-mute: #94a3b8;
+    --fg-soft: #cbd5e1;
+    --accent: #22d3ee;
+    --accent-2: #6366f1;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --red: #f43f5e;
+    --magenta: #a855f7;
+    --pink: #ec4899;
+    --rose: #f43f5e;
+    --teal: #14b8a6;
+    --code-bg: #0a1018;
+    --code-border: #1a2740;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55;
+    font-size: 16px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code, pre, kbd, samp {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.95em;
+  }
+  code {
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 4px;
+    padding: 1px 6px;
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    overflow-x: auto;
+    margin: 14px 0;
+  }
+  pre code {
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  header.hero {
+    background:
+      radial-gradient(circle at 20% 20%, rgba(34, 211, 238, 0.18), transparent 60%),
+      radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.18), transparent 60%),
+      linear-gradient(180deg, #0b1320 0%, #142037 100%);
+    border-bottom: 1px solid var(--bg-3);
+    padding: 48px 32px 56px;
+  }
+  .hero-inner { max-width: 1280px; margin: 0 auto; }
+  .hero .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .hero h1 {
+    margin: 8px 0 12px;
+    font-size: 44px;
+    line-height: 1.1;
+    font-weight: 800;
+  }
+  .hero h1 .v { color: var(--accent); }
+  .hero .tagline { color: var(--fg-soft); font-size: 19px; max-width: 920px; }
+  .hero .meta {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    max-width: 920px;
+  }
+  .hero .meta .chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--bg-3);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .hero .meta .chip .k {
+    color: var(--fg-mute);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .hero .meta .chip .v {
+    color: var(--fg);
+    font-weight: 600;
+    margin-top: 4px;
+    font-size: 15px;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 32px;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px;
+  }
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; }
+    nav.toc { position: static !important; }
+  }
+
+  nav.toc {
+    position: sticky;
+    top: 24px;
+    align-self: start;
+    background: var(--bg-2);
+    border: 1px solid var(--bg-3);
+    border-radius: 12px;
+    padding: 16px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+  }
+  nav.toc h2 {
+    margin: 0 0 12px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+  }
+  nav.toc ol {
+    margin: 0; padding: 0;
+    list-style: none;
+    counter-reset: toc;
+  }
+  nav.toc li {
+    counter-increment: toc;
+    margin: 0;
+  }
+  nav.toc a {
+    display: block;
+    color: var(--fg-soft);
+    padding: 6px 8px 6px 28px;
+    border-radius: 6px;
+    position: relative;
+    font-size: 14px;
+  }
+  nav.toc a::before {
+    content: counter(toc, decimal-leading-zero);
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    color: var(--fg-mute);
+    font-family: ui-monospace, monospace;
+    font-size: 11px;
+  }
+  nav.toc a:hover { background: var(--bg-3); text-decoration: none; }
+  nav.toc a.active { background: rgba(34, 211, 238, 0.12); color: var(--accent); }
+
+  main { min-width: 0; }
+  section.area {
+    background: var(--bg-2);
+    border: 1px solid var(--bg-3);
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    scroll-margin-top: 16px;
+  }
+  section.area h2 {
+    margin: 0 0 6px;
+    font-size: 28px;
+    font-weight: 800;
+  }
+  section.area .area-num {
+    color: var(--accent);
+    font-family: ui-monospace, monospace;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  section.area .lede {
+    color: var(--fg-soft);
+    font-size: 17px;
+    margin: 8px 0 16px;
+  }
+  section.area h3 {
+    margin-top: 24px;
+    font-size: 18px;
+    color: var(--accent);
+    letter-spacing: 0.3px;
+  }
+  section.area h4 {
+    margin-top: 16px;
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: var(--fg-mute);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  section.area p { margin: 10px 0; }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin: 14px 0;
+  }
+  .card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--bg-3);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .card .label {
+    color: var(--fg-mute);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .card .value { margin-top: 4px; font-weight: 600; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--bg-3);
+    vertical-align: top;
+  }
+  th {
+    background: var(--bg-3);
+    color: var(--fg);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  tr:last-child td { border-bottom: none; }
+  td code { white-space: nowrap; }
+
+  .pill {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+  .pill.green { background: rgba(16, 185, 129, 0.18); color: var(--green); }
+  .pill.amber { background: rgba(245, 158, 11, 0.18); color: var(--amber); }
+  .pill.red { background: rgba(244, 63, 94, 0.18); color: var(--red); }
+  .pill.cyan { background: rgba(34, 211, 238, 0.18); color: var(--accent); }
+  .pill.mag { background: rgba(168, 85, 247, 0.18); color: var(--magenta); }
+  .pill.pink { background: rgba(236, 72, 153, 0.18); color: var(--pink); }
+  .pill.mute { background: rgba(148, 163, 184, 0.18); color: var(--fg-mute); }
+
+  .callout {
+    border-left: 4px solid var(--accent);
+    background: rgba(34, 211, 238, 0.06);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+  }
+  .callout.warn { border-left-color: var(--amber); background: rgba(245, 158, 11, 0.08); }
+  .callout.danger { border-left-color: var(--red); background: rgba(244, 63, 94, 0.08); }
+  .callout.ok { border-left-color: var(--green); background: rgba(16, 185, 129, 0.08); }
+  .callout p { margin: 4px 0; }
+  .callout .label {
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+    display: block;
+  }
+  .callout.warn .label { color: var(--amber); }
+  .callout.danger .label { color: var(--red); }
+  .callout.ok .label { color: var(--green); }
+
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+    margin: 14px 0;
+  }
+  .flow .step {
+    background: var(--bg-3);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    border: 1px solid var(--bg-3);
+  }
+  .flow .step .n {
+    color: var(--accent);
+    font-family: ui-monospace, monospace;
+    font-weight: 800;
+  }
+  .flow .step .t { margin-top: 4px; font-size: 14px; font-weight: 600; }
+
+  footer.page {
+    background: var(--bg-2);
+    border-top: 1px solid var(--bg-3);
+    padding: 32px;
+    margin-top: 32px;
+  }
+  footer.page .inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+  footer.page h3 { margin: 0 0 8px; font-size: 14px; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; }
+  footer.page ul { margin: 0; padding-left: 18px; color: var(--fg-soft); font-size: 14px; }
+  footer.page li { margin: 4px 0; }
+  footer.page .credit {
+    text-align: center;
+    color: var(--fg-mute);
+    font-size: 13px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--bg-3);
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Independent field guide</div>
+    <h1>Beads <span class="v">v1.1.0</span></h1>
+    <p class="tagline">
+      A complete, navigable guide to Beads v1.1.0 for engineers, operators, and the
+      AI agents that work with them. Every command, every concept, every caveat &mdash;
+      evidenced against the official pinned release.
+    </p>
+    <div class="meta">
+      <div class="chip"><div class="k">Release</div><div class="v">v1.1.0</div></div>
+      <div class="chip"><div class="k">Commit</div><div class="v"><code>8e4e59d3&hellip;</code></div></div>
+      <div class="chip"><div class="k">Storage</div><div class="v">Dolt (source of truth)</div></div>
+      <div class="chip"><div class="k">Export</div><div class="v"><code>.beads/issues.jsonl</code> (passive)</div></div>
+      <div class="chip"><div class="k">Sync</div><div class="v"><code>refs/dolt/data</code> on git remote</div></div>
+      <div class="chip"><div class="k">Portability</div><div class="v">No network, no JS, no remote fonts</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="toc" aria-label="Table of contents">
+    <h2>Sections</h2>
+    <ol>
+      <li><a href="#s1">Purpose &amp; mental model</a></li>
+      <li><a href="#s2">Storage &amp; truth</a></li>
+      <li><a href="#s3">Install &amp; repository setup</a></li>
+      <li><a href="#s4">Issue model</a></li>
+      <li><a href="#s5">Daily lifecycle</a></li>
+      <li><a href="#s6">Graph &amp; ready work</a></li>
+      <li><a href="#s7">Find &amp; understand</a></li>
+      <li><a href="#s8">Collaboration &amp; sync</a></li>
+      <li><a href="#s9">Agent workflow &amp; memory</a></li>
+      <li><a href="#s10">Formula system</a></li>
+      <li><a href="#s11">Workflow instances</a></li>
+      <li><a href="#s12">Advanced control</a></li>
+      <li><a href="#s13">Completion &amp; cleanup</a></li>
+      <li><a href="#s14">Operations &amp; safety</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section class="area" id="s1">
+      <div class="area-num">01 &mdash; Foundation</div>
+      <h2>Purpose &amp; mental model</h2>
+      <p class="lede">Beads is a dependency-aware, version-controlled issue graph built for AI coding agents and the humans who supervise them.</p>
+
+      <h3>What it is</h3>
+      <p>
+        A persistent, structured memory layer. Beads replaces fragile markdown plans
+        with a real graph: issues have typed dependencies, blockers, hierarchy, and a
+        full audit trail. The graph is version-controlled by Dolt, so multiple agents
+        and humans can edit it concurrently without losing context.
+      </p>
+
+      <h3>Who uses it</h3>
+      <div class="cards">
+        <div class="card"><div class="label">Coding agents</div><div class="value">Discover, claim, do, close, and remember.</div></div>
+        <div class="card"><div class="label">Humans</div><div class="value">Plan, triage, audit, override.</div></div>
+        <div class="card"><div class="label">Orchestrators</div><div class="value">Route work, enforce policies, run gates.</div></div>
+        <div class="card"><div class="label">Multi-agent teams</div><div class="value">Sync state across machines and processes.</div></div>
+      </div>
+
+      <h3>Mental model</h3>
+      <p>
+        Think of Beads as a tiny database with a CLI front-end. You create <em>issues</em>,
+        connect them with <em>dependencies</em>, let an agent drain the <em>ready</em>
+        queue, and let the graph stay the single source of truth. Workflows are
+        expressed as <em>formulas</em> that cook into instances &mdash; molecules or wisps.
+      </p>
+
+      <div class="callout ok">
+        <span class="label">Promise</span>
+        <p>An agent that comes back tomorrow can re-derive what it was doing by reading the graph. That is the durable-work contract.</p>
+      </div>
+    </section>
+
+    <section class="area" id="s2">
+      <div class="area-num">02 &mdash; Foundation</div>
+      <h2>Storage &amp; truth</h2>
+      <p class="lede">A local Dolt database is the source of truth. JSONL is a passive export. Cross-machine sync rides <code>refs/dolt/data</code>.</p>
+
+      <h3>Two modes</h3>
+      <table>
+        <thead><tr><th>Mode</th><th>Storage path</th><th>Concurrency</th><th>Default?</th></tr></thead>
+        <tbody>
+          <tr><td>Embedded</td><td><code>.beads/embeddeddolt/</code></td><td>Single writer (file lock)</td><td><span class="pill green">Yes</span></td></tr>
+          <tr><td>Server</td><td><code>.beads/dolt/</code></td><td>Multiple writers</td><td><span class="pill mute">No</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Three things inside the database</h3>
+      <ul>
+        <li><strong>Issue tables</strong> &mdash; <code>issues</code>, <code>labels</code>, <code>dependencies</code>, <code>events</code>, <code>comments</code>. Synced.</li>
+        <li><strong>Wisp tables</strong> &mdash; <code>wisps</code>, <code>wisp_labels</code>, <code>wisp_dependencies</code>, <code>wisp_events</code>, <code>wisp_comments</code>. Marked <code>dolt_ignored</code>. Never synced, never version-controlled.</li>
+        <li><strong>Meta tables</strong> &mdash; <code>schema_migrations</code>, configuration.</li>
+      </ul>
+
+      <div class="callout danger">
+        <span class="label">Anti-pattern</span>
+        <p><strong>Never treat <code>.beads/issues.jsonl</code> as the wire protocol.</strong> It is a throttled export for viewers and interchange. Cross-machine sync uses <code>bd dolt push</code> / <code>bd dolt pull</code> against <code>refs/dolt/data</code> on the git remote.</p>
+      </div>
+    </section>
+
+    <section class="area" id="s3">
+      <div class="area-num">03 &mdash; Foundation</div>
+      <h2>Install &amp; repository setup</h2>
+      <p class="lede">Install <code>bd</code> once on the machine, then initialise inside each project.</p>
+
+      <h3>Install paths</h3>
+      <table>
+        <thead><tr><th>Method</th><th>Command</th></tr></thead>
+        <tbody>
+          <tr><td>Homebrew (macOS/Linux)</td><td><code>brew install beads</code></td></tr>
+          <tr><td>npm (any platform)</td><td><code>npm install -g @beads/bd</code></td></tr>
+          <tr><td>Windows</td><td><code>winget install beads</code></td></tr>
+          <tr><td>Install script</td><td><code>curl -fsSL https://raw.githubusercontent.com/gastownhall/beads/main/scripts/install.sh | bash</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Initialise a project</h3>
+      <pre><code>cd your-project
+bd init</code></pre>
+      <p>This creates <code>.beads/</code>, optionally writes <code>AGENTS.md</code>, and (if git origin is present) wires a Dolt remote named <code>origin</code>.</p>
+
+      <h4>Init flags</h4>
+      <table>
+        <thead><tr><th>Flag</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td><code>--stealth</code></td><td>No git ops; useful for non-git VCS or one-off work.</td></tr>
+          <tr><td><code>--server</code></td><td>Use an external <code>dolt sql-server</code> instead of embedded.</td></tr>
+          <tr><td><code>--prefix &lt;pfx&gt;</code></td><td>Set the issue ID prefix (default <code>bd</code>).</td></tr>
+          <tr><td><code>--from-jsonl</code></td><td>Bootstrap from an existing <code>issues.jsonl</code>.</td></tr>
+          <tr><td><code>--contributor</code></td><td>Route planning issues to a separate namespace.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Agent integrations</h3>
+      <p>Install the right integration for your tool. <code>bd setup</code> writes hooks and a workflow block into your tool&rsquo;s instruction file:</p>
+      <pre><code>bd setup codex     # Beads skill + AGENTS.md + Codex hooks
+bd setup claude    # SessionStart/PreCompact hooks + minimal section
+bd setup factory   # AGENTS.md marked section
+bd setup cursor    # .cursor/rules/beads.mdc
+bd setup gemini    # SessionStart/PreCompress hooks
+bd setup mux       # AGENTS.md marked section</code></pre>
+
+      <div class="callout ok">
+        <span class="label">Verify</span>
+        <p><code>bd setup &lt;recipe&gt; --check</code> confirms the integration is correctly installed.</p>
+      </div>
+    </section>
+
+    <section class="area" id="s4">
+      <div class="area-num">04 &mdash; Foundation</div>
+      <h2>Issue model</h2>
+      <p class="lede">The central record. Every concept in Beads reduces to an issue with optional dependencies and labels.</p>
+
+      <h3>Core fields</h3>
+      <table>
+        <thead><tr><th>Field</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Content-derived hash, length 4&ndash;7 (<code>bd-a1b2</code>). Hierarchical via dot (<code>bd-a1b2.1</code>).</td></tr>
+          <tr><td><code>title</code>, <code>description</code></td><td>Human-readable content.</td></tr>
+          <tr><td><code>design</code>, <code>notes</code>, <code>acceptance</code></td><td>Long-form structured fields.</td></tr>
+          <tr><td><code>status</code></td><td>Lifecycle position.</td></tr>
+          <tr><td><code>priority</code></td><td>0 (critical) through 4 (backlog). Default 2.</td></tr>
+          <tr><td><code>type</code></td><td>Work category.</td></tr>
+          <tr><td><code>assignee</code></td><td>Who is responsible.</td></tr>
+          <tr><td><code>labels</code></td><td>Free-form tags.</td></tr>
+          <tr><td><code>deps</code></td><td>Typed dependencies (see <a href="#s6">Graph</a>).</td></tr>
+          <tr><td><code>comments</code>, <code>events</code></td><td>Audit trail.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Built-in types</h3>
+      <div class="cards">
+        <div class="card"><div class="label"><span class="pill red">bug</span></div><div class="value">Defect, includes a Steps-to-Reproduce section by default.</div></div>
+        <div class="card"><div class="label"><span class="pill cyan">feature</span></div><div class="value">New functionality, includes Acceptance Criteria.</div></div>
+        <div class="card"><div class="label"><span class="pill green">task</span></div><div class="value">Generic work item.</div></div>
+        <div class="card"><div class="label"><span class="pill mag">epic</span></div><div class="value">Large feature with children.</div></div>
+        <div class="card"><div class="label"><span class="pill amber">chore</span></div><div class="value">Maintenance, dependencies, tooling.</div></div>
+        <div class="card"><div class="label"><span class="pill pink">message</span></div><div class="value">Threaded agent-to-agent or human-to-agent.</div></div>
+        <div class="card"><div class="label"><span class="pill mute">molecule</span></div><div class="value">Workflow instance root.</div></div>
+        <div class="card"><div class="label"><span class="pill mute">gate</span></div><div class="value">Async-wait primitive.</div></div>
+      </div>
+      <p>Operators may add custom types via the <code>types.custom</code> configuration or via auto-registration when a formula uses a new type.</p>
+
+      <h3>Built-in statuses</h3>
+      <table>
+        <thead><tr><th>Status</th><th>Meaning</th><th>Active?</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill cyan">open</span></td><td>Default. Ready to claim or plan.</td><td>Active</td></tr>
+          <tr><td><span class="pill amber">in_progress</span></td><td>Agent has claimed and is working.</td><td>WIP</td></tr>
+          <tr><td><span class="pill amber">blocked</span></td><td>Explicitly waiting.</td><td>WIP</td></tr>
+          <tr><td><span class="pill mute">hooked</span></td><td>Claimed by a worker via <code>--claim</code>.</td><td>WIP</td></tr>
+          <tr><td><span class="pill mute">deferred</span></td><td>Deliberately on ice.</td><td>Frozen</td></tr>
+          <tr><td><span class="pill mute">pinned</span></td><td>Locked against GC / cleanup.</td><td>Frozen</td></tr>
+          <tr><td><span class="pill green">closed</span></td><td>Done. Sets <code>closed_at</code>.</td><td>Done</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Priorities</h3>
+      <table>
+        <thead><tr><th>P</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>0</strong></td><td>Critical. Security, data loss, broken builds. <em>Must be set explicitly.</em></td></tr>
+          <tr><td><strong>1</strong></td><td>High. Major features, important bugs.</td></tr>
+          <tr><td><strong>2</strong></td><td>Medium. Default.</td></tr>
+          <tr><td><strong>3</strong></td><td>Low. Polish, optimization.</td></tr>
+          <tr><td><strong>4</strong></td><td>Backlog. Future ideas.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="area" id="s5">
+      <div class="area-num">05 &mdash; Daily use</div>
+      <h2>Daily lifecycle</h2>
+      <p class="lede">The four-beat loop every agent runs, plus the transitions that surround it.</p>
+
+      <div class="flow">
+        <div class="step"><div class="n">1</div><div class="t">create</div></div>
+        <div class="step"><div class="n">2</div><div class="t">claim</div></div>
+        <div class="step"><div class="n">3</div><div class="t">work</div></div>
+        <div class="step"><div class="n">4</div><div class="t">close</div></div>
+      </div>
+
+      <h3>Create</h3>
+      <pre><code>bd create "Title" -p 1 -t bug --description "Detailed context"
+bd create "Found issue" --deps discovered-from:bd-123
+echo "Long description from stdin" | bd create "Title" --description=-</code></pre>
+
+      <h3>Claim &amp; update</h3>
+      <pre><code>bd update bd-42 --claim             # atomic: assignee + in_progress
+bd update bd-42 --priority 1
+bd update bd-42 --status in_progress
+bd update bd-42 --description "new text"</code></pre>
+      <p><code>--claim</code> is the optimistic-lock primitive. It only succeeds if the issue is unclaimed.</p>
+
+      <h3>Close &amp; reopen</h3>
+      <pre><code>bd close bd-42 --reason "Fixed in PR #142"
+bd reopen bd-42
+bd defer bd-42            # explicit postpone
+bd supersede bd-42 bd-99  # replace with another</code></pre>
+
+      <h3>Comments &amp; labels</h3>
+      <pre><code>bd comment bd-42 "Found root cause: race in token refresh"
+bd label bd-42 backend auth
+bd label bd-42 --remove wontfix</code></pre>
+
+      <div class="callout warn">
+        <span class="label">Agent warning</span>
+        <p>Do <strong>not</strong> use <code>bd edit</code> &mdash; it opens <code>$EDITOR</code> and is unusable for AI agents. Use <code>bd update --description/--title/--design/--notes/--acceptance</code> with stdin (<code>--description=-</code>) when the text contains backticks, exclamation marks, or nested quotes.</p>
+      </div>
+    </section>
+
+    <section class="area" id="s6">
+      <div class="area-num">06 &mdash; Graph</div>
+      <h2>Graph &amp; ready work</h2>
+      <p class="lede">The dependency graph is what makes Beads a work pump rather than a to-do list.</p>
+
+      <h3>Blocking dep types</h3>
+      <table>
+        <thead><tr><th>Type</th><th>Semantics</th><th>Use case</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill cyan">blocks</span></td><td>B cannot start until A closes.</td><td>Sequential work.</td></tr>
+          <tr><td><span class="pill green">parent-child</span></td><td>Open parent keeps children unready; structural edge.</td><td>Epic hierarchies.</td></tr>
+          <tr><td><span class="pill amber">conditional-blocks</span></td><td>B runs only if A fails.</td><td>Error-handling paths.</td></tr>
+          <tr><td><span class="pill pink">waits-for</span></td><td>B waits for all of A&rsquo;s dynamic children.</td><td>Fanout gates.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Non-blocking dep types</h3>
+      <p><span class="pill mute">related</span> <span class="pill mute">discovered-from</span> <span class="pill mute">caused-by</span> <span class="pill mute">tracks</span> <span class="pill mute">supersedes</span> <span class="pill mute">duplicates</span> <span class="pill mute">relates-to</span> <span class="pill mute">replies-to</span> <span class="pill mute">authored-by</span> <span class="pill mute">assigned-to</span> <span class="pill mute">approved-by</span> <span class="pill mute">attests</span> <span class="pill mute">validates</span> <span class="pill mute">delegated-from</span> &mdash; graph annotations only. They do not affect <code>bd ready</code>.</p>
+
+      <h3>Manipulation</h3>
+      <pre><code>bd dep add &lt;child&gt; &lt;parent&gt;                    # default: blocks
+bd dep add &lt;child&gt; &lt;parent&gt; --type tracks
+bd dep add &lt;child&gt; --blocked-by &lt;parent&gt;
+bd dep issue-1 --blocks issue-2
+bd dep remove &lt;child&gt; &lt;parent&gt;
+bd dep rm &lt;child&gt; &lt;parent&gt;                      # alias</code></pre>
+
+      <h3>Ready &amp; blocked</h3>
+      <pre><code>bd ready                       # no open blockers
+bd ready --priority 1 --label backend
+bd ready --assignee alice
+bd ready --unassigned
+bd ready --include-ephemeral   # include wisps
+bd ready --gated               # also show post-gate resume
+bd blocked                     # what's waiting and why
+bd dep tree &lt;id&gt;              # visualise the graph</code></pre>
+
+      <div class="callout">
+        <span class="label">Hierarchy &amp; parallelism</span>
+        <p>Children of an epic are <strong>parallel by default</strong>. Only explicit dependencies create sequence. Closing a parent does <strong>not</strong> cascade-close children.</p>
+      </div>
+    </section>
+
+    <section class="area" id="s7">
+      <div class="area-num">07 &mdash; Discoverability</div>
+      <h2>Find &amp; understand work</h2>
+      <p class="lede">Read commands, filters, and the audit trail.</p>
+
+      <h3>Core reads</h3>
+      <pre><code>bd list                          # everything visible
+bd list --status open --priority 0
+bd list --assignee alice --label backend
+bd show &lt;id&gt;                     # full detail + history
+bd children &lt;id&gt;                 # parent → kids
+bd show &lt;id&gt; --thread            # threaded view</code></pre>
+
+      <h3>Search &amp; discovery</h3>
+      <pre><code>bd search "auth refresh"
+bd search --status open "rate limit"
+bd duplicates --auto-merge        # find and merge near-duplicates
+bd orphans                       # children with no parent
+bd stale                         # old open issues
+bd lint                          # quality checks
+bd stats                         # counts by status / type / priority</code></pre>
+
+      <h3>Reports</h3>
+      <pre><code>bd stats --json                  # machine-readable
+bd list --json                   # one JSON object per issue
+bd show &lt;id&gt; --json              # full audit trail in JSON</code></pre>
+
+      <div class="callout ok">
+        <span class="label">Agent tip</span>
+        <p>Always pass <code>--json</code> in agent scripts. The CLI is the stable API; do not parse the human-readable output.</p>
+      </div>
+    </section>
+
+    <section class="area" id="s8">
+      <div class="area-num">08 &mdash; Collaboration</div>
+      <h2>Collaboration &amp; sync</h2>
+      <p class="lede">Dolt rides <code>refs/dolt/data</code> on the git remote. Source Git and Dolt refs are separate.</p>
+
+      <h3>Push &amp; pull</h3>
+      <pre><code>bd dolt pull       # fetch + merge from remote
+bd dolt push       # publish commits</code></pre>
+      <p>When <code>bd init</code> runs in a repo with a git <code>origin</code>, Beads automatically wires a Dolt remote named <code>origin</code> so that <code>bd dolt push</code> / <code>bd dolt pull</code> flow over your existing git remote.</p>
+
+      <h3>Conflicts</h3>
+      <pre><code>bd vc conflicts    # unresolved Dolt merge
+bd vc resolve      # resolve interactively or with flags
+bd vc commit       # commit pending merge state</code></pre>
+
+      <h3>Worktrees</h3>
+      <p>Worktrees operate directly on the database &mdash; no special coordination needed. Use <code>bd dolt push</code> when each worktree is ready.</p>
+
+      <h3>Multi-repo</h3>
+      <p>Multiple repos can each have their own <code>.beads/</code>. To bridge them, use Dolt remotes (<code>bd backup init /path</code>, then <code>bd backup sync</code>) <em>or</em> one-time bootstrap via <code>bd import</code> from <code>issues.jsonl</code>.</p>
+
+      <div class="callout danger">
+        <span class="label">Anti-patterns</span>
+        <ul>
+          <li>Do <strong>not</strong> treat JSONL as the sync protocol.</li>
+          <li>Do <strong>not</strong> run <code>bd import</code> during normal operation.</li>
+          <li>Do <strong>not</strong> reach for third-party Dolt hosting before trying the default remote.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="area" id="s9">
+      <div class="area-num">09 &mdash; Agent loop</div>
+      <h2>Agent workflow &amp; memory</h2>
+      <p class="lede"><code>bd prime</code> is the single source of truth for operational context. <code>bd remember</code> persists project memory across sessions.</p>
+
+      <h3>The canonical agent loop</h3>
+      <pre><code>1. bd prime                                    # inject context
+2. bd ready --json                              # what can I do?
+3. bd update &lt;id&gt; --claim --json               # claim it
+4. work
+5. bd close &lt;id&gt; --reason "..." --json         # done
+6. (loop)</code></pre>
+
+      <h3>Memory &amp; attribution</h3>
+      <pre><code>bd remember "Always use the secret loader, not env vars directly"
+bd prime                  # later session reads it back
+bd comment &lt;id&gt; "..." --actor claude-opus
+bd create "..." --actor claude-opus</code></pre>
+
+      <h3>Recipe profiles</h3>
+      <p><code>bd setup</code> ships profiles for policy:</p>
+      <ul>
+        <li><strong>conservative</strong> (default) &mdash; track tasks with Beads; do <strong>not</strong> commit, push, or run Dolt remote sync without explicit approval.</li>
+        <li><strong>minimal</strong> &mdash; short file that points to <code>bd prime</code>.</li>
+        <li><strong>team-maintainer</strong> &mdash; only when the repository explicitly delegates session-close authority.</li>
+      </ul>
+
+      <div class="callout">
+        <span class="label">Note</span>
+        <p>The installed Beads block defaults to conservative git authority. Beads does not infer write permission just because a remote exists.</p>
+      </div>
+    </section>
+
+    <section class="area" id="s10">
+      <div class="area-num">10 &mdash; Formulas</div>
+      <h2>Formula system</h2>
+      <p class="lede">A formula is a TOML (or legacy JSON) file describing a reusable workflow as a DAG of steps, variables, inheritance, composition, and advice.</p>
+
+      <h3>File format</h3>
+      <table>
+        <thead><tr><th>Extension</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><code>.formula.toml</code></td><td><span class="pill green">Preferred</span></td></tr>
+          <tr><td><code>.formula.json</code></td><td><span class="pill amber">Legacy</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Search-path priority (highest first)</h3>
+      <ol>
+        <li><code>&lt;beads-dir&gt;/formulas/</code> &mdash; per-project override</li>
+        <li><code>&lt;checkout-root&gt;/.beads/formulas/</code> &mdash; repo-shipped</li>
+        <li><code>~/.beads/formulas/</code> &mdash; user</li>
+        <li><code>$GT_ROOT/.beads/formulas/</code> &mdash; orchestrator</li>
+      </ol>
+
+      <h3>Schema (top-level)</h3>
+      <table>
+        <thead><tr><th>Key</th><th>Role</th></tr></thead>
+        <tbody>
+          <tr><td><code>formula</code></td><td>Name (also the proto ID).</td></tr>
+          <tr><td><code>description</code>, <code>version</code></td><td>Metadata.</td></tr>
+          <tr><td><code>type</code></td><td><code>workflow | expansion | aspect | convoy</code>.</td></tr>
+          <tr><td><code>extends</code></td><td>Parent formula names &mdash; cycle-detected.</td></tr>
+          <tr><td><code>vars</code></td><td>Named variables with default/enum/pattern/required.</td></tr>
+          <tr><td><code>steps</code></td><td>Array of <code>Step</code> objects (see below).</td></tr>
+          <tr><td><code>compose</code></td><td><code>bond_points</code>, <code>expand</code>, <code>map</code>, <code>branch</code>, <code>gate</code>, <code>aspects</code>.</td></tr>
+          <tr><td><code>advice</code></td><td>Aspect advice rules (glob-based before/after/around).</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Step fields</h3>
+      <table>
+        <thead><tr><th>Key</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>id</code>, <code>title</code>, <code>description</code>, <code>notes</code></td><td>Content.</td></tr>
+          <tr><td><code>type</code>, <code>priority</code>, <code>labels</code>, <code>metadata</code></td><td>Issue-shape metadata.</td></tr>
+          <tr><td><code>depends_on</code> / <code>needs</code></td><td>Sequential dependencies.</td></tr>
+          <tr><td><code>waits_for</code></td><td>Fanout gate dependency.</td></tr>
+          <tr><td><code>assignee</code></td><td>Default assignee.</td></tr>
+          <tr><td><code>expand</code>, <code>expand_vars</code></td><td>Inline expansion of another formula.</td></tr>
+          <tr><td><code>condition</code></td><td>Cook-time filter.</td></tr>
+          <tr><td><code>children</code></td><td>Nested steps.</td></tr>
+          <tr><td><code>gate</code></td><td>Runtime gate (auto-creates a <code>gate</code> issue).</td></tr>
+          <tr><td><code>loop</code></td><td>Iteration (count / range / until+max).</td></tr>
+          <tr><td><code>on_complete</code></td><td>Dynamic bonding on step completion.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Variables</h3>
+      <p>Variables use <code>{{name}}</code> placeholders in any string field. Provide them at pour/wisp time with <code>--var key=value</code>.</p>
+      <pre><code>[vars.feature_name]
+description = "Name of the feature"
+required = true
+
+[vars.priority]
+default = "2"
+enum = ["0", "1", "2", "3", "4"]</code></pre>
+
+      <h3>Cook-time conditions</h3>
+      <pre><code>[[steps]]
+id = "docs"
+title = "Write docs"
+condition = "{{needs_docs}}"   # include iff needs_docs is truthy
+condition = "!{{needs_docs}}"  # negated
+condition = "{{region}} == eu"</code></pre>
+
+      <h3>Discover &amp; convert</h3>
+      <pre><code>bd formula list
+bd formula list --type workflow
+bd formula show feature-workflow
+bd formula convert &lt;name&gt;        # JSON → TOML
+bd formula convert --all</code></pre>
+
+      <div class="callout">
+        <span class="label">Pipeline order (fixed)</span>
+        <p>control flow &rarr; advice &rarr; inline expansions &rarr; expansions &rarr; aspects. Composition depth is bounded at 5.</p>
+      </div>
+    </section>
+
+    <section class="area" id="s11">
+      <div class="area-num">11 &mdash; Workflow instances</div>
+      <h2>Workflow instances</h2>
+      <p class="lede">Three flavours of runnable work: <strong>protos</strong> (templates), <strong>molecules</strong> (liquid, durable), and <strong>wisps</strong> (vapor, ephemeral).</p>
+
+      <h3>Proto</h3>
+      <p>A proto is an issue with the <code>template</code> label. By default it is <strong>ephemeral</strong> &mdash; cooked in memory at use time, nothing written to the database.</p>
+      <pre><code># Modern path: cook inline, no DB row
+bd mol pour feature-workflow --var feature_name="auth flow"
+bd mol wisp feature-workflow --var feature_name="auth flow"
+
+# Legacy path: persist the proto (avoid in new work)
+bd cook feature-workflow --persist --force</code></pre>
+
+      <h3>Molecule (liquid)</h3>
+      <p>A molecule is an instantiated DAG: a parent epic plus children connected by typed dependencies.</p>
+      <ul>
+        <li>Root type: <code>molecule</code>.</li>
+        <li>Steps connected by <code>blocks</code> (sequential), <code>conditional-blocks</code> (error path), <code>waits-for</code> (fanout).</li>
+        <li>Syncs via <code>bd dolt push</code>.</li>
+        <li>IDs: hierarchical <code>root.step</code>.</li>
+      </ul>
+      <pre><code>bd mol pour feature-workflow --var feature_name="auth flow"
+bd mol show &lt;mol-id&gt;</code></pre>
+
+      <h3>Wisp (vapor)</h3>
+      <p>A wisp is an ephemeral issue with <code>Ephemeral=true</code>. It lives in <code>dolt_ignored</code> tables and is <strong>never</strong> pushed, pulled, or synced.</p>
+      <table>
+        <thead><tr><th>Property</th><th>Liquid (issue)</th><th>Vapor (wisp)</th></tr></thead>
+        <tbody>
+          <tr><td>Tables</td><td><code>issues</code>, <code>labels</code>, <code>dependencies</code></td><td><code>wisps</code>, <code>wisp_labels</code>, <code>wisp_dependencies</code></td></tr>
+          <tr><td>ID format</td><td><code>bd-a1b2</code></td><td><code>bd-wisp-x7k</code></td></tr>
+          <tr><td>Cross-machine?</td><td>Yes (via <code>bd dolt push/pull</code>)</td><td><strong>No</strong></td></tr>
+          <tr><td>GC candidate?</td><td>Only via <code>bd compact</code></td><td>Yes (<code>bd mol wisp gc</code>)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Promote</h3>
+      <p>Move a wisp into the durable graph when the work has lasting value:</p>
+      <pre><code>bd promote &lt;wisp-id&gt;</code></pre>
+      <p>Preserves the ID and retargets inbound dependencies. Runs in one transaction.</p>
+
+      <div class="callout ok">
+        <span class="label">Wisp types</span>
+        <p>Categorical: <code>heartbeat</code>, <code>ping</code>, <code>patrol</code>, <code>gc_report</code>, <code>recovery</code>, <code>error</code>, <code>escalation</code>. Infra types (<code>agent</code>, <code>role</code>, <code>message</code>) are protected from GC.</p>
+      </div>
+    </section>
+
+    <section class="area" id="s12">
+      <div class="area-num">12 &mdash; Advanced control</div>
+      <h2>Advanced control: bonds &amp; gates</h2>
+      <p class="lede">Bonds connect work graphs. Gates block steps until an external condition is true.</p>
+
+      <h3>Bonds</h3>
+      <p>A bond is a typed dependency between two protos, a proto and a molecule, or two molecules.</p>
+      <table>
+        <thead><tr><th>Type</th><th>Effect</th><th>Backing dep</th></tr></thead>
+        <tbody>
+          <tr><td><code>sequential</code></td><td>B runs after A.</td><td><code>blocks</code></td></tr>
+          <tr><td><code>parallel</code></td><td>B runs alongside A.</td><td><code>parent-child</code></td></tr>
+          <tr><td><code>conditional</code></td><td>B runs only if A fails.</td><td><code>conditional-blocks</code></td></tr>
+        </tbody>
+      </table>
+      <pre><code>bd mol bond A B                   # default sequential
+bd mol bond A B --type parallel
+bd mol bond A B --type conditional
+bd mol bond A B --ref arm-{{name}} --var name=ace</code></pre>
+      <p>The <code>--ref</code> flag enables the Christmas Ornament pattern: dynamic per-item children with deterministic hierarchical IDs.</p>
+
+      <h4>Bond points</h4>
+      <p>A formula can declare named attachment sites via <code>compose.bond_points</code>. <strong>At v1.1.0 these are authoring metadata only</strong> &mdash; there is no CLI flag to address them from <code>bd mol bond</code>. Wire by step ID instead.</p>
+
+      <h3>Gates</h3>
+      <p>A gate is an issue of type <code>gate</code> that blocks another issue until a condition resolves.</p>
+      <table>
+        <thead><tr><th>Type</th><th>Resolved by</th><th>v1.1.0 status</th></tr></thead>
+        <tbody>
+          <tr><td><code>human</code></td><td><code>bd close &lt;gate-id&gt;</code></td><td><span class="pill green">Supported</span></td></tr>
+          <tr><td><code>timer</code></td><td><code>bd gate check</code> (auto-close on expiry)</td><td><span class="pill green">Supported</span></td></tr>
+          <tr><td><code>gh:run</code></td><td><code>bd gate check</code> shells out to <code>gh</code> CLI</td><td><span class="pill green">Supported</span> (workstation-bound)</td></tr>
+          <tr><td><code>gh:pr</code></td><td>Same as <code>gh:run</code></td><td><span class="pill green">Supported</span> (workstation-bound)</td></tr>
+          <tr><td><code>bead</code></td><td>Multi-rig routing removed</td><td><span class="pill red">Disabled</span></td></tr>
+          <tr><td><code>mail</code></td><td>&mdash;</td><td><span class="pill amber">Documented, not implemented in gate check</span></td></tr>
+        </tbody>
+      </table>
+
+      <h4>Creating &amp; managing gates</h4>
+      <pre><code>bd gate create --type=human --blocks &lt;step-id&gt;
+bd gate create --type=timer --blocks &lt;step-id&gt; --timeout 1h
+bd gate check                    # evaluate all
+bd gate check --limit 100        # default limit
+bd gate check --dry-run
+bd gate add-waiter &lt;gate-id&gt; &lt;agent-addr&gt;
+bd gate resolve &lt;gate-id&gt;      # alias for bd close
+bd ready --gated                 # show molecules with newly-ready steps</code></pre>
+
+      <div class="callout warn">
+        <span class="label">v1.1.0 caveat</span>
+        <p><code>gh:run</code> and <code>gh:pr</code> gate types require the <code>gh</code> CLI installed and authenticated. Use them only on machines where <code>gh</code> is set up.</p>
+      </div>
+    </section>
+
+    <section class="area" id="s13">
+      <div class="area-num">13 &mdash; Lifecycle close</div>
+      <h2>Completion &amp; cleanup</h2>
+      <p class="lede">When a molecule finishes, choose how to retire its children while preserving the right amount of evidence.</p>
+
+      <h3>Distill &mdash; capture an ad-hoc epic as a formula</h3>
+      <pre><code>bd mol distill &lt;epic-id&gt; [formula-name] --var key=value</code></pre>
+      <p>Output is written to the first writable formula search path. Variable detection uses word-boundary regex to avoid substring corruption.</p>
+
+      <h3>Squash &mdash; collapse children into a single digest</h3>
+      <pre><code>bd mol squash &lt;mol-id&gt;                    # default body
+bd mol squash &lt;mol-id&gt; --summary "AI summary"
+bd mol squash &lt;mol-id&gt; --keep-children</code></pre>
+      <ul>
+        <li>Creates a closed <code>task</code> titled <code>Digest: &lt;root title&gt;</code> as a <code>parent-child</code> of the root.</li>
+        <li>Deletes ephemeral children by default; <code>--keep-children</code> retains them.</li>
+        <li>Auto-closes the root if it was a wisp and clears its <code>Wisp</code> flag.</li>
+        <li>All operations in a single transaction.</li>
+      </ul>
+
+      <h3>Burn &mdash; hard delete</h3>
+      <pre><code>bd mol burn &lt;id...&gt; --force         # no digest
+bd mol burn &lt;id...&gt; --dry-run       # cascade preview</code></pre>
+      <p>Wisp burn deletes via batch delete; persistent-molecule burn deletes the subgraph. No tombstones; no undo.</p>
+
+      <h3>Promote &mdash; make a wisp durable</h3>
+      <pre><code>bd promote &lt;wisp-id&gt;</code></pre>
+      <p>Copies the wisp and its labels/deps/events/comments into the durable tables. Preserves the original ID.</p>
+
+      <h3>Wisp GC &mdash; sweep stale wisps</h3>
+      <pre><code>bd mol wisp gc                # 1h default, open wisps only
+bd mol wisp gc --age 24h
+bd mol wisp gc --all
+bd mol wisp gc --closed --force    # purge closed regardless of age
+bd mol wisp gc --exclude-type=agent,role,message</code></pre>
+
+      <h3>Stale discovery</h3>
+      <pre><code>bd mol stale                    # complete-but-unclosed molecule roots
+bd mol stale --blocking          # roots with downstream blockers
+bd mol stale --unassigned
+bd stale                         # general stale issues</code></pre>
+
+      <div class="callout ok">
+        <span class="label">Decision rule</span>
+        <p>Use <code>squash</code> for disposable wisp work with an explicit summary. Use <code>promote</code> + acceptance-aware manual close for evidence-bearing work. Use <code>burn</code> only for true scratch.</p>
+      </div>
+    </section>
+
+    <section class="area" id="s14">
+      <div class="area-num">14 &mdash; Operations</div>
+      <h2>Operations &amp; safety</h2>
+      <p class="lede">Configuration, doctor, backup, history compaction, and the v1.1.0 upgrade recipe.</p>
+
+      <h3>Configuration</h3>
+      <pre><code>bd config set no-push true
+bd config set export.path beads.jsonl
+bd config set import.orphan_handling &lt;mode&gt;
+bd config show</code></pre>
+      <p>Most keys also have an env-var equivalent (e.g., <code>BD_NO_PUSH</code>) and a CLI flag (e.g., <code>--no-push</code>). Env &gt; flag &gt; config file.</p>
+
+      <h3>Doctor</h3>
+      <pre><code>bd doctor                       # general health
+bd doctor --json                # machine-readable</code></pre>
+      <p>Includes a <strong>migration-content-skew check</strong> that compares the local <code>schema_migrations</code> hashes against the cached remote-tracking ref (no network fetch).</p>
+
+      <h3>Backup &amp; restore</h3>
+      <pre><code>bd backup init /path/to/backup
+bd backup sync
+bd backup restore --force /path/to/backup</code></pre>
+      <p>A full Dolt backup &mdash; not just an issues-table export &mdash; so it includes branches, history, working-set state, and non-issue tables.</p>
+
+      <h3>History compaction</h3>
+      <pre><code>bd compact
+bd flatten</code></pre>
+      <p>Squashes Dolt history. Use when the database has grown large and you no longer need fine-grained history.</p>
+
+      <h3>v1.1.0 upgrade recipe</h3>
+      <p>Releases can carry schema migrations. A database that syncs to a Dolt remote must be migrated by exactly one designated clone.</p>
+      <ol>
+        <li>Back up first: <code>bd export --all</code> for portability + <code>bd backup init /path &amp;&amp; bd backup sync</code> for a full database backup.</li>
+        <li>Pick one designated clone to migrate. Run <code>bd dolt pull</code>, then start the new <code>bd</code>. The remote-migrate gate is on by default in v1.1.0.</li>
+        <li>Other clones run <code>bd bootstrap</code> (or are auto-bootstrapped if origin advertises <code>refs/dolt/data</code>) to adopt the migrated state.</li>
+        <li>Run <code>bd doctor</code> on every clone to surface migration-content skew.</li>
+        <li>Migration 0052 introduces composite indexes for <code>bd stale</code> / <code>bd ready</code>: expect a one-time 10&ndash;25 s pause on rigs with &gt;10K issues.</li>
+      </ol>
+
+      <h3>Safety checklist</h3>
+      <ul>
+        <li><strong>Never</strong> use a JSONL diff as the cross-machine sync protocol.</li>
+        <li><strong>Never</strong> run <code>bd import</code> during normal operation.</li>
+        <li><strong>Never</strong> use <code>bd edit</code> in agents; use <code>bd update</code> flags.</li>
+        <li><strong>Always</strong> pass <code>--json</code> in agent scripts.</li>
+        <li><strong>Always</strong> pin <code>v1.1.0</code> evidence when writing workflows.</li>
+        <li><strong>Always</strong> back up before upgrading.</li>
+      </ul>
+    </section>
+
+  </main>
+</div>
+
+<footer class="page">
+  <div class="inner">
+    <div>
+      <h3>Primary sources</h3>
+      <ul>
+        <li>Beads official repository &mdash; <code>github.com/gastownhall/beads</code> (commit <code>8e4e59d3&hellip;</code>)</li>
+        <li>v1.1.0 release notes &mdash; <code>CHANGELOG.md</code> at commit <code>8e4e59d3&hellip;</code></li>
+        <li>Local pinned checkout &mdash; <code>internal/types/types.go</code>, <code>internal/formula/types.go</code>, <code>internal/storage/dolt/wisps.go</code></li>
+        <li>Approved advanced-feature study &mdash; summarized in <code>docs/beads/capabilities.md</code></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Companion artifacts</h3>
+      <ul>
+        <li><code>docs/beads/minimax-cheatsheet.svg</code> &mdash; single-image operational atlas</li>
+        <li><code>docs/beads/minimax-diagram.svg</code> &mdash; system mental model</li>
+        <li><code>docs/beads/evaluation.md</code> &mdash; evaluation and decision mapping</li>
+        <li><code>docs/beads/capabilities.md</code> &mdash; validated feature classification</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Portability</h3>
+      <ul>
+        <li>No JavaScript required.</li>
+        <li>No external fonts, libraries, images, or analytics.</li>
+        <li>No network calls required for rendering.</li>
+        <li>Single self-contained file &mdash; portable on any OS.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="credit">
+    Beads v1.1.0 &middot; independent guide &middot; MiniMax &middot; coverage mapped in coverage.md
+  </div>
+</footer>
+
+</body>
+</html>

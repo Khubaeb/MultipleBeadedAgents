@@ -1,0 +1,45 @@
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
+
+# Ignored working evidence produced during MBA research and audits
+.mba-work/
+
+# MBA F4: privacy guarantee for the local AI-resource record (always
+# ignored in BOTH .mba-work/ modes per docs/mba/charter.md section 5 +
+# Constraint 20).
+.mba-work/.ai-resources*
+
+# MBA F4: mode-toggle carrier (lives inside .mba-work/ and is ignored in
+# local mode; only meaningful in shared mode but ignored here as a safe
+# default).
+.mba-work/.mba-mode
+
+# Python-tooling generated cache. These paths are NOT durable source
+# and must not be staged by `git add`. Self-protection (`.pytest_cache/`
+# already carries pytest's own auto `.gitignore`) is a fragile
+# mitigation; the explicit rules below are the durable contract.
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Packaging build artefacts produced by `python -m build`
+# or by an editable `pip install -e .`. Never durable source.
+build/
+dist/
+*.egg-info/
+
+# Private development-agent surfaces. The public source mirror must not
+# contain these files/directories; target projects may still receive their
+# own `.agents/skills/mba/SKILL.md` through `mba init`.
+.agents/
+.opencode/
+.beads/
+.claude/
+AGENTS.md
+CLAUDE.md
+*.egg

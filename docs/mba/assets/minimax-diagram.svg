@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 2200" role="img" aria-labelledby="d-title d-desc" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title id="d-title">Beads v1.1.0 System Diagram</title>
+  <desc id="d-desc">A single-image SVG system diagram for Beads v1.1.0 showing actors, CLI surface, issue model and dependency graph, storage (Dolt and wisp tables), cross-machine sync via refs/dolt/data, and the advanced workflow lifecycle (formulas, protos, molecules, wisps, bonds, gates).</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0b1320"/>
+      <stop offset="1" stop-color="#0e1828"/>
+    </linearGradient>
+    <pattern id="dot" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#1a2740"/>
+    </pattern>
+    <linearGradient id="actorBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0ea5b7"/>
+      <stop offset="1" stop-color="#6366f1"/>
+    </linearGradient>
+    <linearGradient id="engineBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="storeBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#10b981"/>
+      <stop offset="1" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="flowBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#a855f7"/>
+      <stop offset="1" stop-color="#ec4899"/>
+    </linearGradient>
+    <linearGradient id="syncBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f59e0b"/>
+      <stop offset="1" stop-color="#f43f5e"/>
+    </linearGradient>
+    <linearGradient id="opsBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#94a3b8"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+    <marker id="arrowCyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#22d3ee"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#10b981"/>
+    </marker>
+    <marker id="arrowMagenta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#a855f7"/>
+    </marker>
+    <marker id="arrowPink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#ec4899"/>
+    </marker>
+    <marker id="arrowAmber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f43f5e"/>
+    </marker>
+  </defs>
+
+  <rect width="1500" height="2200" fill="url(#bg)"/>
+  <rect width="1500" height="2200" fill="url(#dot)" opacity="0.6"/>
+
+  <!-- Title -->
+  <rect x="0" y="0" width="1500" height="120" fill="url(#actorBar)"/>
+  <text x="40" y="62" font-size="42" font-weight="800" fill="#0b1320">BEADS v1.1.0 — SYSTEM MAP</text>
+  <text x="40" y="98" font-size="18" font-weight="600" fill="#0b1320" opacity="0.85">Purpose &amp; mental model · Actors · CLI · Engine · Stores · Find path · Workflow lifecycle · Sync · Ops · commit 8e4e59d39f3459a43cf21a3236a13eca4dd874f7</text>
+
+  <!-- ============================================ -->
+  <!-- LAYER 1: ACTORS                              -->
+  <!-- ============================================ -->
+  <g>
+    <rect x="30" y="140" width="1440" height="120" rx="14" fill="#142037" stroke="#22d3ee" stroke-width="1.5"/>
+    <rect x="30" y="140" width="1440" height="6" rx="3" fill="url(#actorBar)"/>
+    <text x="50" y="178" font-size="14" font-weight="700" fill="#22d3ee" letter-spacing="2">LAYER 1 · ACTORS</text>
+
+    <g>
+      <rect x="60" y="195" width="320" height="50" rx="8" fill="#0f1c2e" stroke="#22d3ee"/>
+      <text x="220" y="220" text-anchor="middle" font-size="16" font-weight="700" fill="#e2e8f0">Human operator</text>
+      <text x="220" y="237" text-anchor="middle" font-size="11" fill="#94a3b8">plan · triage · audit · override</text>
+    </g>
+    <g>
+      <rect x="400" y="195" width="320" height="50" rx="8" fill="#0f1c2e" stroke="#22d3ee"/>
+      <text x="560" y="220" text-anchor="middle" font-size="16" font-weight="700" fill="#e2e8f0">AI coding agent</text>
+      <text x="560" y="237" text-anchor="middle" font-size="11" fill="#94a3b8">discover · claim · do · close · remember</text>
+    </g>
+    <g>
+      <rect x="740" y="195" width="320" height="50" rx="8" fill="#0f1c2e" stroke="#a855f7"/>
+      <text x="900" y="220" text-anchor="middle" font-size="16" font-weight="700" fill="#e2e8f0">Orchestrator</text>
+      <text x="900" y="237" text-anchor="middle" font-size="11" fill="#94a3b8">pour · bond · gate · write-only writer</text>
+    </g>
+    <g>
+      <rect x="1080" y="195" width="370" height="50" rx="8" fill="#0f1c2e" stroke="#f59e0b"/>
+      <text x="1265" y="220" text-anchor="middle" font-size="16" font-weight="700" fill="#e2e8f0">Auditor / observer</text>
+      <text x="1265" y="237" text-anchor="middle" font-size="11" fill="#94a3b8">bd --readonly · working.md · cross-check</text>
+    </g>
+  </g>
+
+  <!-- Arrow down -->
+  <line x1="750" y1="262" x2="750" y2="295" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 2: CLI SURFACE                          -->
+  <!-- ============================================ -->
+  <g>
+    <rect x="30" y="300" width="1440" height="170" rx="14" fill="#142037" stroke="#22d3ee" stroke-width="1.5"/>
+    <rect x="30" y="300" width="1440" height="6" rx="3" fill="url(#actorBar)"/>
+    <text x="50" y="338" font-size="14" font-weight="700" fill="#22d3ee" letter-spacing="2">LAYER 2 · CLI SURFACE — Install, find, do (bd)</text>
+    <text x="50" y="365" font-size="13" fill="#94a3b8">A single binary; one command group per verb. JSON output is the stable agent API. Install: <tspan font-family="ui-monospace, monospace">brew install beads</tspan> · <tspan font-family="ui-monospace, monospace">npm i -g @beads/bd</tspan> · <tspan font-family="ui-monospace, monospace">bd init</tspan>.</text>
+
+    <g font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="11" fill="#e2e8f0">
+      <!-- 6 column clusters at 11px to fit column widths -->
+      <g>
+        <text x="50" y="395" font-weight="700" fill="#22d3ee" font-family="ui-sans-serif, sans-serif">Issues</text>
+        <text x="50" y="414">bd create · bd show · bd update</text>
+        <text x="50" y="430">bd close · bd reopen · bd defer</text>
+        <text x="50" y="446">bd comment · bd label · supersede</text>
+      </g>
+      <g>
+        <text x="280" y="395" font-weight="700" fill="#22d3ee" font-family="ui-sans-serif, sans-serif">Find &amp; graph</text>
+        <text x="280" y="414">bd ready · bd blocked · bd list</text>
+        <text x="280" y="430">bd search · bd children · bd stale</text>
+        <text x="280" y="446">bd dep add · bd dep remove · tree</text>
+      </g>
+      <g>
+        <text x="540" y="395" font-weight="700" fill="#22d3ee" font-family="ui-sans-serif, sans-serif">Workflow</text>
+        <text x="540" y="414">bd cook · bd mol pour · bd mol wisp</text>
+        <text x="540" y="430">bd mol bond · bd mol squash · bd mol burn</text>
+        <text x="540" y="446">bd mol stale · bd wisp gc · bd promote</text>
+      </g>
+      <g>
+        <text x="810" y="395" font-weight="700" fill="#22d3ee" font-family="ui-sans-serif, sans-serif">Formulas</text>
+        <text x="810" y="414">bd formula list · bd formula show</text>
+        <text x="810" y="430">bd formula convert · bd mol distill</text>
+        <text x="810" y="446" font-size="10" fill="#94a3b8">bd mol seed — verify-only probe (rare)</text>
+      </g>
+      <g>
+        <text x="1060" y="395" font-weight="700" fill="#22d3ee" font-family="ui-sans-serif, sans-serif">Gates</text>
+        <text x="1060" y="414">bd gate create · bd gate check</text>
+        <text x="1060" y="430">bd gate resolve · bd gate discover</text>
+        <text x="1060" y="446">add-waiter · bd ready --gated</text>
+      </g>
+      <g>
+        <text x="1290" y="395" font-weight="700" fill="#22d3ee" font-family="ui-sans-serif, sans-serif">Agent &amp; sync</text>
+        <text x="1290" y="414">bd prime · bd remember · bd setup</text>
+        <text x="1290" y="430">bd dolt pull · bd dolt push · bd vc</text>
+        <text x="1290" y="446">bd config · bd doctor · bd backup</text>
+      </g>
+    </g>
+  </g>
+
+  <line x1="750" y1="472" x2="750" y2="505" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 3: BEADS ENGINE                         -->
+  <!-- ============================================ -->
+  <g>
+    <rect x="30" y="510" width="1440" height="240" rx="14" fill="#142037" stroke="#10b981" stroke-width="1.5"/>
+    <rect x="30" y="510" width="1440" height="6" rx="3" fill="url(#engineBar)"/>
+    <text x="50" y="548" font-size="14" font-weight="700" fill="#10b981" letter-spacing="2">LAYER 3 · BEADS ENGINE</text>
+    <text x="50" y="575" font-size="13" fill="#94a3b8">Issue model · dependency graph · ready/blocked calculation · formula pipeline · gate resolver.</text>
+
+    <!-- Issue record box -->
+    <g>
+      <rect x="60" y="595" width="380" height="140" rx="10" fill="#0f1c2e" stroke="#22d3ee" stroke-width="1.2"/>
+      <text x="80" y="620" font-size="14" font-weight="700" fill="#22d3ee">ISSUE RECORD</text>
+      <text x="80" y="645" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">id          bd-a1b2 (hash, 4-7)</text>
+      <text x="80" y="664" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">title       text</text>
+      <text x="80" y="683" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">status      open · in_progress · blocked</text>
+      <text x="80" y="702" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">            deferred · pinned · hooked · closed</text>
+      <text x="80" y="721" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">priority    0..4   type bug|feature|task|</text>
+    </g>
+
+    <!-- Dep graph box -->
+    <g>
+      <rect x="460" y="595" width="420" height="140" rx="10" fill="#0f1c2e" stroke="#10b981" stroke-width="1.2"/>
+      <text x="480" y="620" font-size="14" font-weight="700" fill="#10b981">DEPENDENCY GRAPH</text>
+      <text x="480" y="645" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">Blocking (drives bd ready):</text>
+      <text x="480" y="664" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">  blocks · parent-child</text>
+      <text x="480" y="683" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">  conditional-blocks · waits-for</text>
+      <text x="480" y="702" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#94a3b8">Non-blocking (annotations):</text>
+      <text x="480" y="721" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#94a3b8">  related · discovered-from · tracks · caused-by</text>
+    </g>
+
+    <!-- Formula pipeline box -->
+    <g>
+      <rect x="900" y="595" width="550" height="140" rx="10" fill="#0f1c2e" stroke="#a855f7" stroke-width="1.2"/>
+      <text x="920" y="620" font-size="14" font-weight="700" fill="#a855f7">FORMULA PIPELINE</text>
+      <text x="920" y="645" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">Parse (.formula.toml)</text>
+      <text x="920" y="664" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">  → Validate · Resolve extends · Merge vars/steps</text>
+      <text x="920" y="683" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">  → Apply order: control-flow → advice → inline</text>
+    </g>
+  </g>
+
+  <line x1="750" y1="752" x2="750" y2="785" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 4: STORAGE                               -->
+  <!-- ============================================ -->
+  <g>
+    <rect x="30" y="790" width="1440" height="240" rx="14" fill="#142037" stroke="#10b981" stroke-width="1.5"/>
+    <rect x="30" y="790" width="1440" height="6" rx="3" fill="url(#storeBar)"/>
+    <text x="50" y="828" font-size="14" font-weight="700" fill="#10b981" letter-spacing="2">LAYER 4 · STORAGE</text>
+    <text x="50" y="855" font-size="13" fill="#94a3b8">Dolt is the source of truth. Wisp tables are dolt_ignored — local only, never synced, never exported.</text>
+
+    <!-- Permanent store -->
+    <g>
+      <rect x="60" y="880" width="660" height="135" rx="10" fill="#0f1c2e" stroke="#10b981" stroke-width="1.2"/>
+      <text x="80" y="905" font-size="14" font-weight="700" fill="#10b981">PERMANENT STORE  (Dolt, versioned)</text>
+      <text x="80" y="930" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">.beads/embeddeddolt/  (embedded)   or   .beads/dolt/  (server)</text>
+      <g font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="12">
+        <rect x="80" y="945" width="110" height="28" rx="6" fill="#142037" stroke="#10b981"/>
+        <text x="135" y="963" text-anchor="middle" fill="#e2e8f0">issues</text>
+        <rect x="200" y="945" width="110" height="28" rx="6" fill="#142037" stroke="#10b981"/>
+        <text x="255" y="963" text-anchor="middle" fill="#e2e8f0">labels</text>
+        <rect x="320" y="945" width="140" height="28" rx="6" fill="#142037" stroke="#10b981"/>
+        <text x="390" y="963" text-anchor="middle" fill="#e2e8f0">dependencies</text>
+        <rect x="470" y="945" width="110" height="28" rx="6" fill="#142037" stroke="#10b981"/>
+        <text x="525" y="963" text-anchor="middle" fill="#e2e8f0">events</text>
+        <rect x="590" y="945" width="110" height="28" rx="6" fill="#142037" stroke="#10b981"/>
+        <text x="645" y="963" text-anchor="middle" fill="#e2e8f0">comments</text>
+      </g>
+      <text x="80" y="995" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#94a3b8">Auto-committed per write. Hash IDs enable cross-clone dedup.</text>
+    </g>
+
+    <!-- Wisp store -->
+    <g>
+      <rect x="780" y="880" width="670" height="135" rx="10" fill="#0f1c2e" stroke="#a855f7" stroke-width="1.2"/>
+      <text x="800" y="905" font-size="14" font-weight="700" fill="#a855f7">WISP STORE  (dolt_ignored, local only)</text>
+      <text x="800" y="930" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">Ephemeral=true  ·  ID: bd-wisp-x7k  ·  never pushed, never pulled</text>
+      <g font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="12">
+        <rect x="800" y="945" width="88" height="28" rx="6" fill="#142037" stroke="#a855f7"/>
+        <text x="844" y="963" text-anchor="middle" fill="#e2e8f0">wisps</text>
+        <rect x="894" y="945" width="108" height="28" rx="6" fill="#142037" stroke="#a855f7"/>
+        <text x="948" y="963" text-anchor="middle" fill="#e2e8f0">wisp_labels</text>
+        <rect x="1008" y="945" width="158" height="28" rx="6" fill="#142037" stroke="#a855f7"/>
+        <text x="1087" y="963" text-anchor="middle" fill="#e2e8f0">wisp_dependencies</text>
+        <rect x="1172" y="945" width="108" height="28" rx="6" fill="#142037" stroke="#a855f7"/>
+        <text x="1226" y="963" text-anchor="middle" fill="#e2e8f0">wisp_events</text>
+        <rect x="1286" y="945" width="148" height="28" rx="6" fill="#142037" stroke="#a855f7"/>
+        <text x="1360" y="963" text-anchor="middle" fill="#e2e8f0">wisp_comments</text>
+      </g>
+      <text x="800" y="995" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#94a3b8">Promote (wisp → issue) is one Dolt transaction; IDs preserved.</text>
+    </g>
+  </g>
+
+  <line x1="750" y1="1032" x2="750" y2="1065" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 5: WORKFLOW LIFECYCLE                    -->
+  <!-- ============================================ -->
+  <g>
+    <rect x="30" y="1070" width="1440" height="320" rx="14" fill="#142037" stroke="#a855f7" stroke-width="1.5"/>
+    <rect x="30" y="1070" width="1440" height="6" rx="3" fill="url(#flowBar)"/>
+    <text x="50" y="1108" font-size="14" font-weight="700" fill="#a855f7" letter-spacing="2">LAYER 5 · ADVANCED WORKFLOW LIFECYCLE</text>
+    <text x="50" y="1135" font-size="13" fill="#94a3b8">From on-disk formula to live molecule or vapor wisp — via bonds and gates.</text>
+
+    <!-- Formula -->
+    <g>
+      <rect x="60" y="1155" width="180" height="80" rx="10" fill="#0f1c2e" stroke="#a855f7" stroke-width="1.2"/>
+      <text x="150" y="1180" text-anchor="middle" font-size="14" font-weight="700" fill="#a855f7">Formula</text>
+      <text x="150" y="1199" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">.formula.toml</text>
+      <text x="150" y="1215" text-anchor="middle" font-size="11" fill="#94a3b8">vars · steps · advice · extends</text>
+    </g>
+
+    <!-- Arrow: Formula → Cook -->
+    <line x1="245" y1="1195" x2="295" y2="1195" stroke="#a855f7" stroke-width="2" marker-end="url(#arrowMagenta)"/>
+
+    <!-- Cook -->
+    <g>
+      <rect x="300" y="1155" width="160" height="80" rx="10" fill="#0f1c2e" stroke="#a855f7" stroke-width="1.2"/>
+      <text x="380" y="1180" text-anchor="middle" font-size="14" font-weight="700" fill="#a855f7">Cook</text>
+      <text x="380" y="1199" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">bd cook &lt;name&gt;</text>
+      <text x="380" y="1215" text-anchor="middle" font-size="11" fill="#94a3b8">compile | runtime</text>
+    </g>
+
+    <!-- Arrow: Cook → Proto -->
+    <line x1="465" y1="1195" x2="515" y2="1195" stroke="#a855f7" stroke-width="2" marker-end="url(#arrowMagenta)"/>
+
+    <!-- Proto -->
+    <g>
+      <rect x="520" y="1155" width="180" height="80" rx="10" fill="#0f1c2e" stroke="#a855f7" stroke-width="1.2"/>
+      <text x="610" y="1180" text-anchor="middle" font-size="14" font-weight="700" fill="#a855f7">Proto</text>
+      <text x="610" y="1199" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">label = "template"</text>
+      <text x="610" y="1215" text-anchor="middle" font-size="11" fill="#94a3b8">ephemeral (default)</text>
+    </g>
+
+    <!-- Split: pour / wisp -->
+    <line x1="610" y1="1237" x2="610" y2="1265" stroke="#a855f7" stroke-width="2"/>
+    <line x1="610" y1="1265" x2="430" y2="1265" stroke="#a855f7" stroke-width="2"/>
+    <line x1="610" y1="1265" x2="780" y2="1265" stroke="#a855f7" stroke-width="2"/>
+    <line x1="430" y1="1265" x2="430" y2="1295" stroke="#a855f7" stroke-width="2" marker-end="url(#arrowMagenta)"/>
+    <line x1="780" y1="1265" x2="780" y2="1295" stroke="#a855f7" stroke-width="2" marker-end="url(#arrowMagenta)"/>
+
+    <text x="450" y="1285" text-anchor="middle" font-size="11" fill="#94a3b8">liquid</text>
+    <text x="755" y="1285" text-anchor="middle" font-size="11" fill="#94a3b8">vapor</text>
+
+    <!-- Molecule -->
+    <g>
+      <rect x="320" y="1300" width="220" height="80" rx="10" fill="#0f1c2e" stroke="#10b981" stroke-width="1.2"/>
+      <text x="430" y="1325" text-anchor="middle" font-size="14" font-weight="700" fill="#10b981">Molecule (liquid)</text>
+      <text x="430" y="1344" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">bd mol pour &lt;name&gt;</text>
+      <text x="430" y="1360" text-anchor="middle" font-size="11" fill="#94a3b8">type="molecule" · durable · synced</text>
+    </g>
+
+    <!-- Wisp -->
+    <g>
+      <rect x="680" y="1300" width="220" height="80" rx="10" fill="#0f1c2e" stroke="#ec4899" stroke-width="1.2"/>
+      <text x="790" y="1325" text-anchor="middle" font-size="14" font-weight="700" fill="#ec4899">Wisp (vapor)</text>
+      <text x="790" y="1344" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">bd mol wisp &lt;name&gt;</text>
+      <text x="790" y="1360" text-anchor="middle" font-size="11" fill="#94a3b8">Ephemeral=true · local only</text>
+    </g>
+
+    <!-- Side: bonds + gates -->
+    <g>
+      <rect x="940" y="1155" width="510" height="100" rx="10" fill="#0f1c2e" stroke="#f43f5e" stroke-width="1.2"/>
+      <text x="960" y="1180" font-size="14" font-weight="700" fill="#f43f5e">BONDS</text>
+      <text x="960" y="1202" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">bd mol bond A B --type {sequential|parallel|conditional}</text>
+      <text x="960" y="1222" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">Atomic spawn+attach.  Bond points: authoring only at v1.1.0.</text>
+      <text x="960" y="1242" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">Dynamic bond: --ref arm-{{var}} --var name=ace.</text>
+    </g>
+    <g>
+      <rect x="940" y="1265" width="510" height="100" rx="10" fill="#0f1c2e" stroke="#f59e0b" stroke-width="1.2"/>
+      <text x="960" y="1290" font-size="14" font-weight="700" fill="#f59e0b">GATES</text>
+      <text x="960" y="1312" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">bd gate create --type=human|timer|gh:run|gh:pr --blocks &lt;id&gt;</text>
+      <text x="960" y="1332" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">bd gate check  ·  bd gate add-waiter  ·  bd ready --gated</text>
+      <text x="960" y="1352" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">bead=disabled  ·  mail=not implemented in check.</text>
+    </g>
+
+    <!-- Cleanup row at bottom -->
+    <g>
+      <rect x="60" y="1300" width="240" height="80" rx="10" fill="#0f1c2e" stroke="#94a3b8" stroke-width="1.2"/>
+      <text x="180" y="1318" text-anchor="middle" font-size="13" font-weight="700" fill="#94a3b8">Cleanup verbs</text>
+      <text x="180" y="1340" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">promote · squash · burn · distill</text>
+      <text x="180" y="1356" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">stale · wisp gc</text>
+    </g>
+  </g>
+
+  <line x1="750" y1="1392" x2="750" y2="1425" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 6: SYNC                                  -->
+  <!-- ============================================ -->
+  <g>
+    <rect x="30" y="1430" width="1440" height="260" rx="14" fill="#142037" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect x="30" y="1430" width="1440" height="6" rx="3" fill="url(#syncBar)"/>
+    <text x="50" y="1468" font-size="14" font-weight="700" fill="#f59e0b" letter-spacing="2">LAYER 6 · COLLABORATION &amp; SYNC</text>
+    <text x="50" y="1495" font-size="13" fill="#94a3b8">Dolt rides refs/dolt/data on your git remote. Wisp state never leaves the machine.</text>
+
+    <!-- Local clone -->
+    <g>
+      <rect x="60" y="1515" width="320" height="150" rx="10" fill="#0f1c2e" stroke="#10b981" stroke-width="1.2"/>
+      <text x="80" y="1540" font-size="14" font-weight="700" fill="#10b981">CLONE A</text>
+      <text x="80" y="1562" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">.beads/embeddeddolt/  ·  issues (synced)</text>
+      <text x="80" y="1578" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">+ wisp tables  (dolt_ignored, local)</text>
+      <text x="80" y="1598" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">.beads/issues.jsonl  (export)</text>
+      <text x="80" y="1624" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#f59e0b">bd dolt pull &amp;&amp; bd dolt push</text>
+      <text x="80" y="1644" font-size="11" fill="#94a3b8">JSONL is passive, never the wire</text>
+    </g>
+
+    <!-- Git remote center -->
+    <g>
+      <rect x="450" y="1515" width="600" height="150" rx="10" fill="#0f1c2e" stroke="#f59e0b" stroke-width="1.2"/>
+      <text x="470" y="1540" font-size="14" font-weight="700" fill="#f59e0b">GIT REMOTE  (carries Beads data on a separate ref)</text>
+      <text x="470" y="1562" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">refs/heads/*  — your source code</text>
+      <text x="470" y="1580" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">refs/dolt/data  — Beads issue history (Dolt commits)</text>
+      <text x="470" y="1598" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">Wisp state: NOT stored on remote (local-only)</text>
+      <text x="470" y="1624" font-size="11" fill="#94a3b8">Dolt remotes (DoltHub, S3, GCS) work the same way.</text>
+    </g>
+
+    <!-- Local clone B -->
+    <g>
+      <rect x="1120" y="1515" width="320" height="150" rx="10" fill="#0f1c2e" stroke="#10b981" stroke-width="1.2"/>
+      <text x="1140" y="1540" font-size="14" font-weight="700" fill="#10b981">CLONE B</text>
+      <text x="1140" y="1562" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">.beads/embeddeddolt/  ·  issues (synced)</text>
+      <text x="1140" y="1578" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">+ wisp tables  (dolt_ignored, local)</text>
+      <text x="1140" y="1598" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">.beads/issues.jsonl  (export)</text>
+      <text x="1140" y="1624" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#f59e0b">bd dolt pull &amp;&amp; bd dolt push</text>
+      <text x="1140" y="1644" font-size="11" fill="#94a3b8">Worktrees: each can push independently</text>
+    </g>
+
+    <!-- Arrows: clones <-> remote -->
+    <line x1="380" y1="1590" x2="450" y2="1590" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowAmber)"/>
+    <line x1="450" y1="1602" x2="380" y2="1602" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowAmber)"/>
+    <line x1="1120" y1="1590" x2="1050" y2="1590" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowAmber)"/>
+    <line x1="1050" y1="1602" x2="1120" y2="1602" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowAmber)"/>
+  </g>
+
+  <line x1="750" y1="1692" x2="750" y2="1725" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 7: OPERATIONS &amp; SAFETY                 -->
+  <!-- ============================================ -->
+  <g>
+    <rect x="30" y="1730" width="1440" height="290" rx="14" fill="#142037" stroke="#94a3b8" stroke-width="1.5"/>
+    <rect x="30" y="1730" width="1440" height="6" rx="3" fill="url(#opsBar)"/>
+    <text x="50" y="1768" font-size="14" font-weight="700" fill="#94a3b8" letter-spacing="2">LAYER 7 · OPERATIONS &amp; SAFETY</text>
+    <text x="50" y="1795" font-size="13" fill="#94a3b8">Config, doctor, backup, history compaction, migration recipe.</text>
+
+    <!-- Boxes -->
+    <g>
+      <rect x="60" y="1815" width="280" height="180" rx="10" fill="#0f1c2e" stroke="#22d3ee" stroke-width="1.2"/>
+      <text x="80" y="1840" font-size="14" font-weight="700" fill="#22d3ee">CONFIGURATION</text>
+      <text x="80" y="1862" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">bd config set no-push true</text>
+      <text x="80" y="1880" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">bd config set export.path</text>
+      <text x="80" y="1898" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">BD_NO_PUSH env</text>
+      <text x="80" y="1916" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">--no-push flag</text>
+      <text x="80" y="1944" font-size="11" fill="#94a3b8">env &gt; flag &gt; config file</text>
+      <text x="80" y="1962" font-size="11" fill="#94a3b8">types.custom allowed</text>
+      <text x="80" y="1980" font-size="11" fill="#94a3b8">no-git-ops for stealth</text>
+    </g>
+
+    <g>
+      <rect x="360" y="1815" width="280" height="180" rx="10" fill="#0f1c2e" stroke="#10b981" stroke-width="1.2"/>
+      <text x="380" y="1840" font-size="14" font-weight="700" fill="#10b981">DOCTOR &amp; RECOVERY</text>
+      <text x="380" y="1862" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">bd doctor</text>
+      <text x="380" y="1880" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">bd vc conflicts</text>
+      <text x="380" y="1898" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">bd vc resolve</text>
+      <text x="380" y="1924" font-size="11" fill="#94a3b8">Migration-content skew check</text>
+      <text x="380" y="1942" font-size="11" fill="#94a3b8">compares schema_migrations</text>
+      <text x="380" y="1960" font-size="11" fill="#94a3b8">hashes vs remote ref</text>
+      <text x="380" y="1978" font-size="11" fill="#94a3b8">(no network fetch)</text>
+    </g>
+
+    <g>
+      <rect x="660" y="1815" width="280" height="180" rx="10" fill="#0f1c2e" stroke="#a855f7" stroke-width="1.2"/>
+      <text x="680" y="1840" font-size="14" font-weight="700" fill="#a855f7">BACKUP &amp; HISTORY</text>
+      <text x="680" y="1862" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">bd backup init /path</text>
+      <text x="680" y="1880" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">bd backup sync</text>
+      <text x="680" y="1898" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">bd backup restore --force</text>
+      <text x="680" y="1916" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">bd compact  ·  bd flatten</text>
+      <text x="680" y="1944" font-size="11" fill="#94a3b8">backup = full Dolt (not just</text>
+      <text x="680" y="1962" font-size="11" fill="#94a3b8">issues.jsonl export)</text>
+      <text x="680" y="1980" font-size="11" fill="#94a3b8">export --all for portability</text>
+    </g>
+
+    <g>
+      <rect x="960" y="1815" width="490" height="180" rx="10" fill="#0f1c2e" stroke="#f59e0b" stroke-width="1.2"/>
+      <text x="980" y="1840" font-size="14" font-weight="700" fill="#f59e0b">v1.1.0 UPGRADE RECIPE</text>
+      <text x="980" y="1862" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">1. bd export --all  +  bd backup init &amp;&amp; bd backup sync</text>
+      <text x="980" y="1880" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">2. Pick one clone to migrate (remote-migrate gate is on)</text>
+      <text x="980" y="1898" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">3. Other clones: bd bootstrap (or auto via refs/dolt/data)</text>
+      <text x="980" y="1916" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#cbd5e1">4. bd doctor on every clone for schema skew</text>
+      <text x="980" y="1944" font-size="11" fill="#94a3b8">Migration 0052: 10–25 s pause on rigs &gt; 10K issues</text>
+      <text x="980" y="1962" font-size="11" fill="#94a3b8">v53 repair covers wisp_dependencies split-column drift</text>
+      <text x="980" y="1980" font-size="11" fill="#94a3b8">Recovery gate lets already-failed DB self-heal on next open</text>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <rect x="0" y="2060" width="1500" height="140" fill="#0b1320" stroke="#1a2740"/>
+  <text x="40" y="2095" font-size="16" font-weight="800" fill="#22d3ee">LEGEND</text>
+  <g font-size="12" fill="#cbd5e1">
+    <rect x="40" y="2108" width="14" height="14" rx="3" fill="#22d3ee"/><text x="62" y="2120">Issue model &amp; CLI</text>
+    <rect x="190" y="2108" width="14" height="14" rx="3" fill="#10b981"/><text x="212" y="2120">Engine / permanent store / molecule</text>
+    <rect x="430" y="2108" width="14" height="14" rx="3" fill="#a855f7"/><text x="452" y="2120">Formula / proto / wisp tables</text>
+    <rect x="640" y="2108" width="14" height="14" rx="3" fill="#ec4899"/><text x="662" y="2120">Wisp lifecycle</text>
+    <rect x="790" y="2108" width="14" height="14" rx="3" fill="#f43f5e"/><text x="812" y="2120">Bonds (composed control)</text>
+    <rect x="40" y="2133" width="14" height="14" rx="3" fill="#f59e0b"/><text x="62" y="2145">Gates &amp; sync / upgrade</text>
+    <rect x="240" y="2133" width="14" height="14" rx="3" fill="#94a3b8"/><text x="262" y="2145">Ops, doctor, backup, configuration</text>
+  </g>
+  <text x="40" y="2180" font-size="13" fill="#cbd5e1">Sources: Beads v1.1.0 (gastownhall/beads, commit 8e4e59d3…)  ·  Companion: minimax-cheatsheet.svg · minimax-guide.html · coverage.md</text>
+  <text x="1330" y="2180" font-size="13" font-weight="700" fill="#22d3ee" text-anchor="end">BEADS v1.1.0 · SYSTEM MAP · 1 IMAGE</text>
+</svg>

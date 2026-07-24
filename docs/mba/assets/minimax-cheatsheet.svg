@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 2320" role="img" aria-labelledby="cs-title cs-desc" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title id="cs-title">Beads v1.1.0 Operational Cheatsheet</title>
+  <desc id="cs-desc">A dense single-image SVG cheatsheet covering all 14 product areas of Beads v1.1.0. Includes install, issue model, lifecycle, dependency graph, queries, sync, agent workflow, formulas, protos, molecules, wisps, bonds, gates, and operations. Every command is valid for v1.1.0.</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0b1320"/>
+      <stop offset="1" stop-color="#101a2c"/>
+    </linearGradient>
+    <linearGradient id="headerBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0ea5b7"/>
+      <stop offset="0.5" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#6366f1"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0 L0 0 0 40" fill="none" stroke="#1a2740" stroke-width="0.5"/>
+    </pattern>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="1500" height="2320" fill="url(#bg)"/>
+  <rect width="1500" height="2320" fill="url(#grid)" opacity="0.5"/>
+
+  <!-- Header -->
+  <rect x="0" y="0" width="1500" height="150" fill="url(#headerBar)"/>
+  <text x="40" y="70" font-size="48" font-weight="800" fill="#0b1320" letter-spacing="1">BEADS v1.1.0 — OPERATIONAL ATLAS</text>
+  <text x="40" y="108" font-size="22" font-weight="600" fill="#0b1320" opacity="0.85">Quickest complete operational reference  ·  commit 8e4e59d39f3459a43cf21a3236a13eca4dd874f7</text>
+  <text x="40" y="135" font-size="18" font-weight="500" fill="#0b1320" opacity="0.75">Storage: Dolt (source of truth)  ·  Export: .beads/issues.jsonl  ·  Sync: refs/dolt/data  ·  No third-party hosting required</text>
+
+  <!-- Reusable card style: rect with rounded corners, top color stripe, area number, title, body -->
+  <!-- Card geometry: width 460, gap 20, 3 cols, x = 30, 510, 990 -->
+
+  <!-- Row 1 -->
+  <!-- 1. Purpose -->
+  <g filter="url(#cardShadow)">
+    <rect x="30" y="170" width="460" height="380" rx="14" fill="#142037" stroke="#22d3ee" stroke-width="1.5"/>
+    <rect x="30" y="170" width="460" height="10" rx="5" fill="#22d3ee"/>
+    <text x="50" y="220" font-size="14" font-weight="700" fill="#22d3ee">01 / PURPOSE</text>
+    <text x="50" y="258" font-size="24" font-weight="800" fill="#e2e8f0">Purpose &amp; mental model</text>
+    <text x="50" y="290" font-size="15" fill="#cbd5e1">A dependency-aware, version-controlled issue</text>
+    <text x="50" y="310" font-size="15" fill="#cbd5e1">graph for AI agents and humans. Beads gives</text>
+    <text x="50" y="330" font-size="15" fill="#cbd5e1">agents durable, structured memory across</text>
+    <text x="50" y="350" font-size="15" fill="#cbd5e1">long-horizon tasks.</text>
+    <text x="50" y="395" font-size="14" font-weight="700" fill="#94a3b8">WHO USES IT</text>
+    <text x="50" y="420" font-size="15" fill="#e2e8f0">· Coding agents (read / write Beads)</text>
+    <text x="50" y="442" font-size="15" fill="#e2e8f0">· Humans (plan, triage, audit)</text>
+    <text x="50" y="464" font-size="15" fill="#e2e8f0">· Multi-agent orchestrators (claim, route)</text>
+    <text x="50" y="505" font-size="13" font-weight="700" fill="#22d3ee">SOURCE: README.md:13–15  ·  AGENTS.md</text>
+  </g>
+
+  <!-- 2. Storage -->
+  <g filter="url(#cardShadow)">
+    <rect x="510" y="170" width="460" height="380" rx="14" fill="#142037" stroke="#10b981" stroke-width="1.5"/>
+    <rect x="510" y="170" width="460" height="10" rx="5" fill="#10b981"/>
+    <text x="530" y="220" font-size="14" font-weight="700" fill="#10b981">02 / STORAGE &amp; TRUTH</text>
+    <text x="530" y="258" font-size="24" font-weight="800" fill="#e2e8f0">Where data lives</text>
+    <text x="530" y="290" font-size="15" fill="#cbd5e1">Dolt SQL database inside .beads/ is the</text>
+    <text x="530" y="310" font-size="15" fill="#cbd5e1">single source of truth. Two modes:</text>
+    <text x="530" y="345" font-size="14" font-weight="700" fill="#94a3b8">EMBEDDED (default)</text>
+    <text x="530" y="368" font-size="14" fill="#e2e8f0">.beads/embeddeddolt/  ·  single writer</text>
+    <text x="530" y="398" font-size="14" font-weight="700" fill="#94a3b8">SERVER</text>
+    <text x="530" y="421" font-size="14" fill="#e2e8f0">.beads/dolt/  ·  external dolt sql-server</text>
+    <text x="530" y="451" font-size="14" font-weight="700" fill="#f59e0b">JSONL IS A PASSIVE EXPORT</text>
+    <text x="530" y="473" font-size="14" fill="#e2e8f0">.beads/issues.jsonl — for viewers only,</text>
+    <text x="530" y="492" font-size="14" fill="#e2e8f0">never the wire protocol.</text>
+    <text x="530" y="530" font-size="13" font-weight="700" fill="#10b981">SOURCE: README.md:115–179  ·  docs/DOLT.md</text>
+  </g>
+
+  <!-- 3. Install -->
+  <g filter="url(#cardShadow)">
+    <rect x="990" y="170" width="480" height="380" rx="14" fill="#142037" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect x="990" y="170" width="480" height="10" rx="5" fill="#f59e0b"/>
+    <text x="1010" y="220" font-size="14" font-weight="700" fill="#f59e0b">03 / INSTALL &amp; SETUP</text>
+    <text x="1010" y="258" font-size="24" font-weight="800" fill="#e2e8f0">One-time path</text>
+    <text x="1010" y="290" font-size="14" font-weight="700" fill="#94a3b8">INSTALL BD ONCE (system-wide)</text>
+    <text x="1010" y="312" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">brew install beads              # macOS / Linux</text>
+    <text x="1010" y="334" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">npm install -g @beads/bd        # Node.js</text>
+    <text x="1010" y="356" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">winget install beads             # Windows</text>
+    <text x="1010" y="388" font-size="14" font-weight="700" fill="#94a3b8">INIT IN YOUR PROJECT</text>
+    <text x="1010" y="410" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">cd your-project &amp;&amp; bd init</text>
+    <text x="1010" y="432" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#94a3b8">bd init --stealth      # git-free</text>
+    <text x="1010" y="452" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#94a3b8">bd init --server       # external dolt</text>
+    <text x="1010" y="472" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#94a3b8">bd init --prefix my-   # custom prefix</text>
+    <text x="1010" y="500" font-size="14" font-weight="700" fill="#94a3b8">AGENT INTEGRATIONS</text>
+    <text x="1010" y="522" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd setup codex | claude | factory | cursor</text>
+    <text x="1010" y="540" font-size="13" font-weight="700" fill="#f59e0b">SOURCE: README.md:18–48, 185–214  ·  docs/SETUP.md</text>
+  </g>
+
+  <!-- Row 2 -->
+  <!-- 4. Issue -->
+  <g filter="url(#cardShadow)">
+    <rect x="30" y="570" width="460" height="380" rx="14" fill="#142037" stroke="#a855f7" stroke-width="1.5"/>
+    <rect x="30" y="570" width="460" height="10" rx="5" fill="#a855f7"/>
+    <text x="50" y="620" font-size="14" font-weight="700" fill="#a855f7">04 / ISSUE MODEL</text>
+    <text x="50" y="658" font-size="24" font-weight="800" fill="#e2e8f0">The central record</text>
+    <text x="50" y="688" font-size="14" font-weight="700" fill="#94a3b8">FIELDS</text>
+    <text x="50" y="710" font-size="14" fill="#e2e8f0">id, title, description, design, notes,</text>
+    <text x="50" y="730" font-size="14" fill="#e2e8f0">acceptance, status, priority, type,</text>
+    <text x="50" y="750" font-size="14" fill="#e2e8f0">assignee, labels, deps, comments, events</text>
+    <text x="50" y="780" font-size="14" font-weight="700" fill="#94a3b8">TYPES</text>
+    <text x="50" y="800" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bug  feature  task  epic  chore</text>
+    <text x="50" y="819" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">message  molecule  gate  (+ custom)</text>
+    <text x="50" y="849" font-size="14" font-weight="700" fill="#94a3b8">STATUSES</text>
+    <text x="50" y="869" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">open  in_progress  blocked  deferred</text>
+    <text x="50" y="888" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">closed  pinned  hooked</text>
+    <text x="50" y="902" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">PRIORITY: 0 1 2 3 4   (P0 = critical; default 2)</text>
+    <text x="50" y="930" font-size="13" font-weight="700" fill="#a855f7">SOURCE: internal/types/types.go:307–532</text>
+  </g>
+
+  <!-- 5. Lifecycle -->
+  <g filter="url(#cardShadow)">
+    <rect x="510" y="570" width="460" height="380" rx="14" fill="#142037" stroke="#22d3ee" stroke-width="1.5"/>
+    <rect x="510" y="570" width="460" height="10" rx="5" fill="#22d3ee"/>
+    <text x="530" y="620" font-size="14" font-weight="700" fill="#22d3ee">05 / DAILY LIFECYCLE</text>
+    <text x="530" y="658" font-size="24" font-weight="800" fill="#e2e8f0">Create → Claim → Close</text>
+    <text x="530" y="690" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd create "Title" -p 1 -t bug</text>
+    <text x="530" y="710" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd create "Title" --deps discovered-from:bd-1</text>
+    <text x="530" y="740" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd update &lt;id&gt; --claim        # atomic claim</text>
+    <text x="530" y="760" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd update &lt;id&gt; --status in_progress</text>
+    <text x="530" y="780" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd update &lt;id&gt; --description "..."</text>
+    <text x="530" y="800" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd close &lt;id&gt; --reason "Fixed in PR #42"</text>
+    <text x="530" y="820" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd reopen &lt;id&gt;</text>
+    <text x="530" y="840" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd defer &lt;id&gt;  ·  bd supersede &lt;id&gt;</text>
+    <text x="530" y="860" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd comment &lt;id&gt; "note"  ·  bd label &lt;id&gt; foo</text>
+    <text x="530" y="888" font-size="13" font-weight="700" fill="#f59e0b">WARNING: bd edit opens $EDITOR — don't use</text>
+    <text x="530" y="908" font-size="13" font-weight="700" fill="#f59e0b">in agents; use bd update flags instead.</text>
+    <text x="530" y="935" font-size="13" font-weight="700" fill="#22d3ee">SOURCE: README.md:60–67  ·  cmd/bd/close.go</text>
+  </g>
+
+  <!-- 6. Graph -->
+  <g filter="url(#cardShadow)">
+    <rect x="990" y="570" width="480" height="380" rx="14" fill="#142037" stroke="#10b981" stroke-width="1.5"/>
+    <rect x="990" y="570" width="480" height="10" rx="5" fill="#10b981"/>
+    <text x="1010" y="620" font-size="14" font-weight="700" fill="#10b981">06 / GRAPH &amp; READY WORK</text>
+    <text x="1010" y="658" font-size="24" font-weight="800" fill="#e2e8f0">Dependencies drive ready</text>
+    <text x="1010" y="690" font-size="14" font-weight="700" fill="#94a3b8">BLOCKING DEP TYPES</text>
+    <text x="1010" y="710" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">blocks                # B waits for A to close</text>
+    <text x="1010" y="729" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">parent-child          # child waits for parent</text>
+    <text x="1010" y="748" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">conditional-blocks   # B runs if A fails</text>
+    <text x="1010" y="767" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">waits-for             # B waits for A's children</text>
+    <text x="1010" y="795" font-size="14" font-weight="700" fill="#94a3b8">NON-BLOCKING (graph only)</text>
+    <text x="1010" y="815" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">related  discovered-from  caused-by  tracks</text>
+    <text x="1010" y="834" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">supersedes  duplicates  relates-to  replies-to</text>
+    <text x="1010" y="860" font-size="14" font-weight="700" fill="#94a3b8">ADD / REMOVE</text>
+    <text x="1010" y="880" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd dep add &lt;child&gt; &lt;parent&gt;</text>
+    <text x="1010" y="899" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd dep add &lt;child&gt; &lt;parent&gt; --type tracks</text>
+    <text x="1010" y="918" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd dep remove &lt;child&gt; &lt;parent&gt;</text>
+    <text x="1010" y="940" font-size="13" font-weight="700" fill="#10b981">SOURCE: types.go:781–854  ·  docs/DEPENDENCIES.md</text>
+  </g>
+
+  <!-- Row 3 -->
+  <!-- 7. Find -->
+  <g filter="url(#cardShadow)">
+    <rect x="30" y="970" width="460" height="380" rx="14" fill="#142037" stroke="#22d3ee" stroke-width="1.5"/>
+    <rect x="30" y="970" width="460" height="10" rx="5" fill="#22d3ee"/>
+    <text x="50" y="1020" font-size="14" font-weight="700" fill="#22d3ee">07 / FIND &amp; UNDERSTAND</text>
+    <text x="50" y="1058" font-size="24" font-weight="800" fill="#e2e8f0">Read &amp; query</text>
+    <text x="50" y="1090" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd ready             # no open blockers</text>
+    <text x="50" y="1110" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd ready --priority 1 --label backend</text>
+    <text x="50" y="1130" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd blocked           # what's waiting</text>
+    <text x="50" y="1150" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd list              # all issues</text>
+    <text x="50" y="1170" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd show &lt;id&gt;        # details + audit</text>
+    <text x="50" y="1190" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd search "query"</text>
+    <text x="50" y="1210" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd children &lt;id&gt;    # parent thread</text>
+    <text x="50" y="1230" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd stats             # counts by status</text>
+    <text x="50" y="1250" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd stale             # old open issues</text>
+    <text x="50" y="1270" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd orphans           # parentless</text>
+    <text x="50" y="1290" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd lint              # quality checks</text>
+    <text x="50" y="1310" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd duplicates --auto-merge</text>
+    <text x="50" y="1335" font-size="13" font-weight="700" fill="#22d3ee">SOURCE: AGENTS.md  ·  docs/DEPENDENCIES.md</text>
+  </g>
+
+  <!-- 8. Sync -->
+  <g filter="url(#cardShadow)">
+    <rect x="510" y="970" width="460" height="380" rx="14" fill="#142037" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect x="510" y="970" width="460" height="10" rx="5" fill="#f59e0b"/>
+    <text x="530" y="1020" font-size="14" font-weight="700" fill="#f59e0b">08 / COLLABORATION &amp; SYNC</text>
+    <text x="530" y="1058" font-size="24" font-weight="800" fill="#e2e8f0">Dolt ↔ Dolt, not JSONL</text>
+    <text x="530" y="1090" font-size="14" font-weight="700" fill="#94a3b8">PUSH / PULL (cross-machine)</text>
+    <text x="530" y="1112" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd dolt pull       # fetch &amp; merge</text>
+    <text x="530" y="1132" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd dolt push       # publish commits</text>
+    <text x="530" y="1152" font-size="13" font-weight="700" fill="#94a3b8">Sync rides refs/dolt/data on git remote.</text>
+    <text x="530" y="1170" font-size="14" font-weight="700" fill="#94a3b8">CONFLICTS (Dolt-level)</text>
+    <text x="530" y="1192" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd vc conflicts</text>
+    <text x="530" y="1212" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd vc resolve</text>
+    <text x="530" y="1232" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd vc commit</text>
+    <text x="530" y="1253" font-size="14" font-weight="700" fill="#f43f5e">ANTI-PATTERNS</text>
+    <text x="530" y="1273" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">· Do not use JSONL as the sync protocol</text>
+    <text x="530" y="1292" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">· Do not run bd import during normal flow</text>
+    <text x="530" y="1311" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">· Use Dolt hosting first, not third-party</text>
+    <text x="530" y="1331" font-size="13" font-weight="700" fill="#f59e0b">SOURCE: docs/SYNC_CONCEPTS.md  ·  docs/GIT_INTEGRATION.md:35–42</text>
+  </g>
+
+  <!-- 9. Agent -->
+  <g filter="url(#cardShadow)">
+    <rect x="990" y="970" width="480" height="380" rx="14" fill="#142037" stroke="#22d3ee" stroke-width="1.5"/>
+    <rect x="990" y="970" width="480" height="10" rx="5" fill="#22d3ee"/>
+    <text x="1010" y="1020" font-size="14" font-weight="700" fill="#22d3ee">09 / AGENT WORKFLOW</text>
+    <text x="1010" y="1058" font-size="24" font-weight="800" fill="#e2e8f0">For AI coding agents</text>
+    <text x="1010" y="1090" font-size="14" font-weight="700" fill="#94a3b8">CONTEXT INJECTION</text>
+    <text x="1010" y="1112" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd prime           # SSOT workflow + memory</text>
+    <text x="1010" y="1132" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd remember "..."  # project memory</text>
+    <text x="1010" y="1152" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#94a3b8">prime injects prime-time context for the</text>
+    <text x="1010" y="1170" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#94a3b8">session; remember persists across sessions.</text>
+    <text x="1010" y="1200" font-size="14" font-weight="700" fill="#94a3b8">PROGRAMMATIC USE</text>
+    <text x="1010" y="1222" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd ready --json</text>
+    <text x="1010" y="1242" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd create "..." -p 1 --json</text>
+    <text x="1010" y="1262" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd close &lt;id&gt; --json</text>
+    <text x="1010" y="1290" font-size="14" font-weight="700" fill="#94a3b8">ATTRIBUTION</text>
+    <text x="1010" y="1306" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd comment &lt;id&gt; "..." --actor agent  # audit trail</text>
+    <text x="1010" y="1331" font-size="13" font-weight="700" fill="#22d3ee">SOURCE: README.md:38–48  ·  docs/SETUP.md:15</text>
+  </g>
+
+  <!-- Row 4 -->
+  <!-- 10. Formulas -->
+  <g filter="url(#cardShadow)">
+    <rect x="30" y="1370" width="460" height="460" rx="14" fill="#142037" stroke="#a855f7" stroke-width="1.5"/>
+    <rect x="30" y="1370" width="460" height="10" rx="5" fill="#a855f7"/>
+    <text x="50" y="1420" font-size="14" font-weight="700" fill="#a855f7">10 / FORMULAS</text>
+    <text x="50" y="1458" font-size="24" font-weight="800" fill="#e2e8f0">Reusable workflow templates</text>
+    <text x="50" y="1488" font-size="14" font-weight="700" fill="#94a3b8">FILES</text>
+    <text x="50" y="1510" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">.formula.toml      # preferred</text>
+    <text x="50" y="1529" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">.formula.json      # legacy</text>
+    <text x="50" y="1558" font-size="14" font-weight="700" fill="#94a3b8">SEARCH PATHS (priority order)</text>
+    <text x="50" y="1578" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">1. &lt;beads-dir&gt;/formulas/         (beads-dir)</text>
+    <text x="50" y="1595" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">2. &lt;repo&gt;/.beads/formulas/       (checkout)</text>
+    <text x="50" y="1612" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">3. ~/.beads/formulas/             (user)</text>
+    <text x="50" y="1629" font-size="12" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">4. $GT_ROOT/.beads/formulas/      (orch.)</text>
+    <text x="50" y="1650" font-size="14" font-weight="700" fill="#94a3b8">SCHEMA</text>
+    <text x="50" y="1670" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">formula, description, version, type,</text>
+    <text x="50" y="1689" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">extends, vars, steps, compose, advice</text>
+    <text x="50" y="1709" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">steps: id, title, type, needs, depends_on,</text>
+    <text x="50" y="1728" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">       waits_for, condition, gate, loop</text>
+    <text x="50" y="1749" font-size="13" font-weight="700" fill="#a855f7">SOURCE: internal/formula/types.go:64–666  ·  parser.go:60–108</text>
+  </g>
+
+  <!-- 11. Instances -->
+  <g filter="url(#cardShadow)">
+    <rect x="510" y="1370" width="460" height="460" rx="14" fill="#142037" stroke="#ec4899" stroke-width="1.5"/>
+    <rect x="510" y="1370" width="460" height="10" rx="5" fill="#ec4899"/>
+    <text x="530" y="1420" font-size="14" font-weight="700" fill="#ec4899">11 / INSTANCES</text>
+    <text x="530" y="1458" font-size="24" font-weight="800" fill="#e2e8f0">Protos, molecules, wisps</text>
+    <text x="530" y="1488" font-size="14" font-weight="700" fill="#94a3b8">PROTO (template)</text>
+    <text x="530" y="1510" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">label="template"  ·  ephemeral by default</text>
+    <text x="530" y="1539" font-size="14" font-weight="700" fill="#94a3b8">MOLECULE (liquid, persistent)</text>
+    <text x="530" y="1561" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">type="molecule"  ·  parent+children</text>
+    <text x="530" y="1580" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">Syncs via bd dolt push</text>
+    <text x="530" y="1608" font-size="14" font-weight="700" fill="#94a3b8">WISP (vapor, ephemeral)</text>
+    <text x="530" y="1630" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">Ephemeral=true  ·  ID: bd-wisp-xxxx</text>
+    <text x="530" y="1649" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">Lives in dolt_ignored tables</text>
+    <text x="530" y="1668" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">NEVER synced to other machines</text>
+    <text x="530" y="1698" font-size="14" font-weight="700" fill="#94a3b8">VERBS</text>
+    <text x="530" y="1720" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd mol pour &lt;name&gt; --var k=v</text>
+    <text x="530" y="1740" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd mol wisp &lt;name&gt; --var k=v</text>
+    <text x="530" y="1758" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd promote &lt;wisp-id&gt;</text>
+    <text x="530" y="1780" font-size="13" font-weight="700" fill="#ec4899">SOURCE: types.go:79–668  ·  wisps.go:17–107</text>
+  </g>
+
+  <!-- 12. Control -->
+  <g filter="url(#cardShadow)">
+    <rect x="990" y="1370" width="480" height="460" rx="14" fill="#142037" stroke="#f43f5e" stroke-width="1.5"/>
+    <rect x="990" y="1370" width="480" height="10" rx="5" fill="#f43f5e"/>
+    <text x="1010" y="1420" font-size="14" font-weight="700" fill="#f43f5e">12 / ADVANCED CONTROL</text>
+    <text x="1010" y="1458" font-size="24" font-weight="800" fill="#e2e8f0">Bonds &amp; gates</text>
+    <text x="1010" y="1488" font-size="14" font-weight="700" fill="#94a3b8">BOND TYPES</text>
+    <text x="1010" y="1510" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">--type sequential   # B after A  (blocks)</text>
+    <text x="1010" y="1529" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">--type parallel     # B alongside (parent-child)</text>
+    <text x="1010" y="1548" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">--type conditional # B if A fails (cond-blocks)</text>
+    <text x="1010" y="1576" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd mol bond A B --type &lt;t&gt;</text>
+    <text x="1010" y="1605" font-size="14" font-weight="700" fill="#94a3b8">GATE TYPES</text>
+    <text x="1010" y="1627" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">human  timer  gh:run  gh:pr  bead (disabled)</text>
+    <text x="1010" y="1646" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">mail (not impl. in check)</text>
+    <text x="1010" y="1656" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd gate create --type=human --blocks &lt;id&gt;</text>
+    <text x="1010" y="1676" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd gate check [--limit N]</text>
+    <text x="1010" y="1696" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd gate add-waiter &lt;gate&gt; &lt;addr&gt;</text>
+    <text x="1010" y="1716" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd ready --gated  # auto-resume</text>
+    <text x="1010" y="1745" font-size="14" font-weight="700" fill="#f43f5e">LIMIT: bond points are authoring metadata</text>
+    <text x="1010" y="1763" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">only at v1.1.0; not CLI-addressable.</text>
+    <text x="1010" y="1785" font-size="13" font-weight="700" fill="#f43f5e">SOURCE: types.go:1443–1446  ·  gate.go:29–880</text>
+  </g>
+
+  <!-- Row 5 -->
+  <!-- 13. Cleanup -->
+  <g filter="url(#cardShadow)">
+    <rect x="30" y="1850" width="460" height="360" rx="14" fill="#142037" stroke="#10b981" stroke-width="1.5"/>
+    <rect x="30" y="1850" width="460" height="10" rx="5" fill="#10b981"/>
+    <text x="50" y="1900" font-size="14" font-weight="700" fill="#10b981">13 / COMPLETION &amp; CLEANUP</text>
+    <text x="50" y="1938" font-size="24" font-weight="800" fill="#e2e8f0">Terminal paths</text>
+    <text x="50" y="1968" font-size="14" font-weight="700" fill="#94a3b8">DURABLE OPTIONS</text>
+    <text x="50" y="1990" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd promote &lt;wisp-id&gt;</text>
+    <text x="50" y="2009" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd mol squash &lt;id&gt; --summary "..."</text>
+    <text x="50" y="2038" font-size="14" font-weight="700" fill="#94a3b8">DISPOSABLE OPTIONS</text>
+    <text x="50" y="2060" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd mol burn &lt;id...&gt; --force</text>
+    <text x="50" y="2079" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd mol wisp gc [--age 1h] [--closed --force]</text>
+    <text x="50" y="2108" font-size="14" font-weight="700" fill="#94a3b8">DISCOVERY</text>
+    <text x="50" y="2130" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd mol stale [--blocking|--unassigned]</text>
+    <text x="50" y="2149" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd mol distill &lt;epic&gt; [name]   # extract → formula</text>
+    <text x="50" y="2188" font-size="13" font-weight="700" fill="#10b981">SOURCE: cmd/bd/promote.go, mol_squash.go, mol_burn.go</text>
+  </g>
+
+  <!-- 14. Ops -->
+  <g filter="url(#cardShadow)">
+    <rect x="510" y="1850" width="460" height="360" rx="14" fill="#142037" stroke="#94a3b8" stroke-width="1.5"/>
+    <rect x="510" y="1850" width="460" height="10" rx="5" fill="#94a3b8"/>
+    <text x="530" y="1900" font-size="14" font-weight="700" fill="#94a3b8">14 / OPERATIONS &amp; SAFETY</text>
+    <text x="530" y="1938" font-size="24" font-weight="800" fill="#e2e8f0">Configuration, doctor, backup</text>
+    <text x="530" y="1968" font-size="14" font-weight="700" fill="#94a3b8">CONFIG</text>
+    <text x="530" y="1990" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd config set no-push true</text>
+    <text x="530" y="2009" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd config set export.path beads.jsonl</text>
+    <text x="530" y="2038" font-size="14" font-weight="700" fill="#94a3b8">DOCTOR &amp; BACKUP</text>
+    <text x="530" y="2060" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd doctor                  # incl. migration skew</text>
+    <text x="530" y="2079" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd backup init /path/ &amp;&amp; bd backup sync</text>
+    <text x="530" y="2098" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd backup restore --force /path/</text>
+    <text x="530" y="2117" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd compact  ·  bd flatten  # history shrink</text>
+    <text x="530" y="2145" font-size="14" font-weight="700" fill="#f43f5e">v1.1.0 UPGRADE RECIPE</text>
+    <text x="530" y="2165" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">Back up first; one designated clone</text>
+    <text x="530" y="2183" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">migrates; others bootstrap (CHANGELOG.md).</text>
+    <text x="530" y="2202" font-size="13" font-weight="700" fill="#94a3b8">SOURCE: docs/CONFIG.md  ·  CHANGELOG.md:154–184</text>
+  </g>
+
+  <!-- Compact key -->
+  <g filter="url(#cardShadow)">
+    <rect x="990" y="1850" width="480" height="360" rx="14" fill="#142037" stroke="#22d3ee" stroke-width="1.5"/>
+    <rect x="990" y="1850" width="480" height="10" rx="5" fill="#22d3ee"/>
+    <text x="1010" y="1900" font-size="14" font-weight="700" fill="#22d3ee">KEY CHEAT PATTERNS</text>
+    <text x="1010" y="1938" font-size="24" font-weight="800" fill="#e2e8f0">Agent loop in 4 lines</text>
+    <text x="1010" y="1978" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">1. bd ready --json</text>
+    <text x="1010" y="1998" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">2. bd update &lt;id&gt; --claim --json</text>
+    <text x="1010" y="2018" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">3. work …</text>
+    <text x="1010" y="2038" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">4. bd close &lt;id&gt; --reason "..."</text>
+    <text x="1010" y="2072" font-size="14" font-weight="700" fill="#94a3b8">SPAWN A FEATURE WORKFLOW</text>
+    <text x="1010" y="2094" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd mol pour feature-workflow \</text>
+    <text x="1010" y="2113" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">  --var feature_name="auth flow"</text>
+    <text x="1010" y="2142" font-size="14" font-weight="700" fill="#94a3b8">SYNC AFTER SESSION</text>
+    <text x="1010" y="2163" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd dolt pull &amp;&amp; bd dolt push</text>
+    <text x="1010" y="2183" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#e2e8f0">bd prime  # capture memory before handoff</text>
+  </g>
+
+  <!-- Footer -->
+  <rect x="0" y="2220" width="1500" height="100" fill="#0b1320" stroke="#1a2740"/>
+  <text x="40" y="2252" font-size="16" font-weight="800" fill="#22d3ee">SOURCES</text>
+  <text x="40" y="2276" font-size="14" fill="#cbd5e1">Beads v1.1.0 repository (github.com/gastownhall/beads)  ·  Local checkout @ commit 8e4e59d39f3459a43cf21a3236a13eca4dd874f7</text>
+  <text x="40" y="2298" font-size="14" fill="#cbd5e1">Advanced-feature study summarized in docs/beads/capabilities.md  ·  Verified portable: no remote assets</text>
+  <text x="1170" y="2276" font-size="14" font-weight="700" fill="#94a3b8">v1.1.0 · 14 areas · 1 image</text>
+  <text x="1170" y="2298" font-size="14" font-weight="700" fill="#22d3ee">BEADS v1.1.0</text>
+</svg>

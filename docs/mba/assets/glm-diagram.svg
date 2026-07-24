@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1930" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" text-rendering="geometricPrecision" role="img" aria-labelledby="dg-title dg-desc">
+  <title id="dg-title">Beads v1.1.0 — System Diagram (GLM)</title>
+  <desc id="dg-desc">Single-image system diagram for Beads v1.1.0. Shows actors (users, agents, orchestrators), the system boundary, stores (local Dolt, wisp tables, JSONL export, backup, source Git), data movement (create/update/close write path; ready/show read path; dolt push/pull sync; export/import), the daily issue lifecycle (open, in_progress, blocked, deferred, closed), dependency-driven scheduling (blocks/conditional-blocks/waits-for/parent-child), the agent loop (prime, claim, comment, close, remember), the formula subsystem (formula → cook → proto, composition via extends/advice/aspects/expand), workflow instances (proto → pour → molecule, proto → wisp → wisp tables, promote, bonds, gates), terminal paths (distill, squash, burn, stale, gc, compact, flatten), and operational safeguards (doctor, config, backup, migrate). Source: github.com/gastownhall/beads/tree/v1.1.0.</desc>
+
+  <defs>
+    <style>
+      .ink { fill: #0f172a; }
+      .muted { fill: #475569; }
+      .faint { fill: #64748b; }
+      .paper { fill: #ffffff; }
+      .card { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 1; }
+      .card-warm { fill: #fffbeb; stroke: #fde68a; stroke-width: 1; }
+      .card-cool { fill: #ecfeff; stroke: #a5f3fc; stroke-width: 1; }
+      .card-soft { fill: #eef2ff; stroke: #c7d2fe; stroke-width: 1; }
+      .card-danger { fill: #fef2f2; stroke: #fecaca; stroke-width: 1; }
+      .head { fill: #0f172a; }
+      .accent { fill: #4338ca; }
+      .teal { fill: #0d9488; }
+      .amber { fill: #b45309; }
+      .danger { fill: #b91c1c; }
+      .rule { stroke: #cbd5e1; stroke-width: 1; fill: none; }
+      .boundary { stroke: #4338ca; stroke-width: 2; fill: none; stroke-dasharray: 6 4; }
+      .epkg { fill: #ffffff; stroke: #4338ca; stroke-width: 1.5; }
+      .lbl { font-weight: 700; letter-spacing: 0.06em; }
+      .ttl { font-weight: 700; }
+      .mono { font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, Menlo, monospace; }
+      .crisp { shape-rendering: crispEdges; }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="arrowTeal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0d9488"/>
+    </marker>
+    <marker id="arrowAmber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b45309"/>
+    </marker>
+    <marker id="arrowDanger" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b91c1c"/>
+    </marker>
+    <marker id="arrowOpen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="none" stroke="#475569" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <!-- ============= CANVAS ============= -->
+  <rect class="paper crisp" x="0" y="0" width="1280" height="1930"/>
+
+  <!-- ============= HEADER ============= -->
+  <rect class="head crisp" x="0" y="0" width="1280" height="120"/>
+  <text x="48" y="58" fill="#ffffff" font-size="32" font-weight="700">bd (beads) — System Diagram</text>
+  <text x="48" y="92" fill="#cbd5e1" font-size="14">Actors · stores · sync · lifecycle · graph · formulas · instances · safeguards</text>
+  <g transform="translate(1010,46)">
+    <rect class="accent" x="0" y="0" width="222" height="40" rx="6"/>
+    <text x="111" y="27" text-anchor="middle" fill="#ffffff" font-size="17" font-weight="700">Beads v1.1.0</text>
+    <text x="111" y="68" text-anchor="middle" fill="#94a3b8" font-size="13" font-family="ui-monospace, Consolas, monospace">commit 8e4e59d3</text>
+  </g>
+
+  <!-- ============= ACTORS BAND ============= -->
+  <text x="48" y="156" class="ink lbl" font-size="13">ACTORS · users, agents, orchestrators (Area 1)</text>
+  <line class="rule" x1="48" y1="164" x2="1232" y2="164"/>
+
+  <g transform="translate(48,178)">
+    <rect class="card-soft" x="0" y="0" width="380" height="84" rx="8"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">Users</text>
+    <text x="20" y="50" class="muted" font-size="13">Plan, prioritise, approve gates, accept outcomes.</text>
+    <text x="20" y="70" class="ink mono" font-size="12">bd create · bd assign · bd close --reason · bd gate resolve</text>
+  </g>
+  <g transform="translate(450,178)">
+    <rect class="card-soft" x="0" y="0" width="380" height="84" rx="8"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">Agents (Claude, Cursor, Codex, Copilot, …)</text>
+    <text x="20" y="50" class="muted" font-size="13">Discover ready work, claim, do, narrate, close, hand off.</text>
+    <text x="20" y="70" class="ink mono" font-size="12">bd ready --claim · bd update · bd comment · bd prime</text>
+  </g>
+  <g transform="translate(852,178)">
+    <rect class="card-soft" x="0" y="0" width="380" height="84" rx="8"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">Orchestrators &amp; patrols</text>
+    <text x="20" y="50" class="muted" font-size="13">Drive molecules, evaluate gates, run recurring cycles.</text>
+    <text x="20" y="70" class="ink mono" font-size="12">bd mol ready --gated · bd gate check · bd mol wisp</text>
+  </g>
+
+  <!-- ============= SYSTEM BOUNDARY ============= -->
+  <text x="48" y="296" class="ink lbl" font-size="13">SYSTEM BOUNDARY · storage + commands (Areas 2, 4, 5, 7, 14) — one machine, one .beads/</text>
+  <line class="rule" x1="48" y1="304" x2="1232" y2="304"/>
+
+  <rect class="boundary crisp" x="48" y="320" width="848" height="540" rx="10"/>
+  <text x="64" y="346" class="accent lbl" font-size="13">bd (this machine)</text>
+
+  <!-- LEFT: STORES column inside boundary -->
+  <g transform="translate(72,360)">
+    <!-- Local Dolt DB (source of truth) -->
+    <rect class="card-cool" x="0" y="0" width="376" height="118" rx="8"/>
+    <rect class="teal" x="0" y="0" width="6" height="118"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">Local Dolt database · .beads/dolt/</text>
+    <text x="20" y="50" class="muted" font-size="13">Source of truth. Cell-level history. Auto-commit per write.</text>
+    <text x="20" y="70" class="ink" font-size="13">Tables: <tspan class="mono" font-size="12">issues · dependencies · labels · events · comments</tspan></text>
+    <text x="20" y="90" class="ink" font-size="13">Synced via <tspan class="mono" font-size="12">refs/dolt/data</tspan> (separate from <tspan class="mono" font-size="12">refs/heads/*</tspan>).</text>
+    <text x="20" y="108" class="ink mono" font-size="12">bd dolt push · bd dolt pull · bd vc status · bd branch</text>
+  </g>
+  <g transform="translate(72,488)">
+    <!-- Wisp tables -->
+    <rect class="card-warm" x="0" y="0" width="376" height="106" rx="8"/>
+    <rect class="amber" x="0" y="0" width="6" height="106"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">Wisp tables · dolt_ignored</text>
+    <text x="20" y="50" class="muted" font-size="13">Ephemeral issues (Ephemeral=true). Local only.</text>
+    <text x="20" y="70" class="ink" font-size="13">Tables: <tspan class="mono" font-size="12">wisps · wisp_labels · wisp_dependencies</tspan></text>
+    <text x="20" y="88" class="ink" font-size="13"><tspan class="mono" font-size="12">wisp_events · wisp_comments</tspan></text>
+    <text x="20" y="100" class="faint" font-size="12">Never enter Dolt history. Never sync.</text>
+  </g>
+  <g transform="translate(72,604)">
+    <!-- JSONL export -->
+    <rect class="card" x="0" y="0" width="376" height="92" rx="8"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">.beads/issues.jsonl · passive export</text>
+    <text x="20" y="50" class="muted" font-size="13">For viewers, interchange, migration. Not the sync channel.</text>
+    <text x="20" y="72" class="ink mono" font-size="12">bd export · bd import · bd config set export.auto true</text>
+  </g>
+  <g transform="translate(72,704)">
+    <!-- Backup -->
+    <rect class="card" x="0" y="0" width="376" height="92" rx="8"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">.beads/backup/ · Dolt-native backup</text>
+    <text x="20" y="50" class="muted" font-size="13">Off-machine recovery target. Atomic sync.</text>
+    <text x="20" y="72" class="ink mono" font-size="12">bd backup init · bd backup sync · bd backup restore</text>
+  </g>
+
+  <!-- RIGHT: COMMANDS column inside boundary -->
+  <g transform="translate(500,360)">
+    <rect class="card" x="0" y="0" width="380" height="118" rx="8"/>
+    <rect class="accent" x="0" y="0" width="6" height="118"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">Write path (auto-commits to Dolt)</text>
+    <text x="20" y="52" class="ink mono" font-size="13">bd create · bd update --claim · bd close</text>
+    <text x="20" y="72" class="ink mono" font-size="13">bd comment · bd dep add · bd label add</text>
+    <text x="20" y="92" class="ink mono" font-size="13">bd mol pour · bd mol wisp · bd gate create</text>
+    <text x="20" y="110" class="faint" font-size="12">Every write is one Dolt commit.</text>
+  </g>
+  <g transform="translate(500,508)">
+    <rect class="card" x="0" y="0" width="380" height="118" rx="8"/>
+    <rect class="teal" x="0" y="0" width="6" height="118"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">Read / query path</text>
+    <text x="20" y="52" class="ink mono" font-size="13">bd ready · bd blocked · bd list · bd search</text>
+    <text x="20" y="72" class="ink mono" font-size="13">bd show · bd history · bd dep tree · bd status</text>
+    <text x="20" y="92" class="ink mono" font-size="13">bd count · bd mol show · bd mol progress</text>
+    <text x="20" y="110" class="faint" font-size="12">Direct SQL queries against Dolt.</text>
+  </g>
+  <g transform="translate(500,656)">
+    <rect class="card" x="0" y="0" width="380" height="92" rx="8"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">Lifecycle verbs</text>
+    <text x="20" y="52" class="ink mono" font-size="13">bd reopen · bd defer · bd undefer · bd supersede</text>
+    <text x="20" y="74" class="ink mono" font-size="13">bd rename · bd rename-prefix · bd promote</text>
+  </g>
+  <g transform="translate(500,758)">
+    <rect class="card" x="0" y="0" width="380" height="92" rx="8"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">Operational verbs</text>
+    <text x="20" y="52" class="ink mono" font-size="12">bd doctor · bd config · bd bootstrap</text>
+    <text x="20" y="72" class="ink mono" font-size="12">bd migrate · bd recompute-blocked · bd gc</text>
+    <text x="20" y="88" class="faint mono" font-size="10">bd compact · bd flatten</text>
+  </g>
+
+  <!-- EXTERNALS (outside boundary, right column) -->
+  <text x="900" y="346" class="ink lbl" font-size="13">EXTERNALS · sync &amp; integrations (Areas 8, 12, 14)</text>
+  <g transform="translate(900,360)">
+    <rect class="card" x="0" y="0" width="332" height="118" rx="8"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">Dolt remote (often Git origin)</text>
+    <text x="20" y="50" class="muted" font-size="13">Replicates Dolt history under refs/dolt/data.</text>
+    <text x="20" y="72" class="ink mono" font-size="13">git+ssh://git@github.com/org/repo.git</text>
+    <text x="20" y="92" class="ink mono" font-size="13">git+https://github.com/org/repo.git</text>
+    <text x="20" y="110" class="faint" font-size="12">Or any DoltHub/S3/GCS Dolt remote URL.</text>
+  </g>
+  <g transform="translate(900,488)">
+    <rect class="card" x="0" y="0" width="332" height="100" rx="8"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">Source Git (your repo)</text>
+    <text x="20" y="50" class="muted" font-size="13">Code, AGENTS.md, config. Under refs/heads/*.</text>
+    <text x="20" y="72" class="ink mono" font-size="13">git push · git pull</text>
+    <text x="20" y="90" class="faint" font-size="12">Shares the remote URL; never collides with Dolt refs.</text>
+  </g>
+  <g transform="translate(900,600)">
+    <rect class="card" x="0" y="0" width="332" height="100" rx="8"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">External trackers</text>
+    <text x="20" y="50" class="muted" font-size="13">Two-way sync (status, pull, push, sync).</text>
+    <text x="20" y="72" class="ink mono" font-size="13">bd jira · bd linear · bd github</text>
+    <text x="20" y="90" class="ink mono" font-size="13">bd gitlab · bd notion · bd ado</text>
+  </g>
+  <g transform="translate(900,710)">
+    <rect class="card" x="0" y="0" width="332" height="86" rx="8"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">GitHub (for gh:run / gh:pr gates)</text>
+    <text x="20" y="50" class="muted" font-size="13">Polled by bd gate check via the gh CLI.</text>
+    <text x="20" y="70" class="ink mono" font-size="13">gh run view · gh pr view</text>
+  </g>
+
+  <!-- ARROWS: actors → boundary -->
+  <path d="M 238,262 Q 238,300 238,360" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M 640,262 Q 640,300 640,360" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M 1042,262 Q 1042,300 1042,360" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ARROW: Dolt ↔ Dolt remote (sync) — routed through corridor 1 (y=478-508) -->
+  <path d="M 448,419 L 470,419 L 470,493 L 884,493 L 884,419 L 900,419" fill="none" stroke="#0d9488" stroke-width="2" marker-end="url(#arrowTeal)" marker-start="url(#arrowTeal)"/>
+  <text x="670" y="490" text-anchor="middle" class="teal ttl" font-size="11">bd dolt push / pull (separate from git)</text>
+
+  <!-- ARROW: source git ↔ remote — routed through corridor 2 (y=626-656) -->
+  <path d="M 448,538 L 476,538 L 476,641 L 884,641 L 884,538 L 900,538" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="670" y="638" text-anchor="middle" class="faint" font-size="11">git push / git pull (source only)</text>
+
+  <!-- ARROW: promote (wisp → Dolt) — routed through inter-column gap at x=458 -->
+  <path d="M 448,541 L 458,541 L 458,419 L 448,419" fill="none" stroke="#0d9488" stroke-width="1.5" marker-end="url(#arrowTeal)"/>
+  <text x="462" y="482" class="teal mono" font-size="9">promote</text>
+
+  <!-- ============= DAILY LIFECYCLE BAND ============= -->
+  <text x="48" y="892" class="ink lbl" font-size="13">DAILY LIFECYCLE · issue states (Area 5)</text>
+  <line class="rule" x1="48" y1="900" x2="1232" y2="900"/>
+
+  <g transform="translate(48,918)">
+    <!-- States -->
+    <g>
+      <rect class="card" x="0" y="0" width="180" height="64" rx="8"/>
+      <text x="90" y="28" text-anchor="middle" class="ink ttl" font-size="15">open</text>
+      <text x="90" y="50" text-anchor="middle" class="muted" font-size="12">created; visible to bd ready</text>
+    </g>
+    <g transform="translate(210,0)">
+      <rect class="card-soft" x="0" y="0" width="180" height="64" rx="8"/>
+      <text x="90" y="28" text-anchor="middle" class="ink ttl" font-size="15">in_progress</text>
+      <text x="90" y="50" text-anchor="middle" class="muted" font-size="12">bd update --claim</text>
+    </g>
+    <g transform="translate(420,0)">
+      <rect class="card-warm" x="0" y="0" width="180" height="64" rx="8"/>
+      <text x="90" y="28" text-anchor="middle" class="ink ttl" font-size="15">blocked</text>
+      <text x="90" y="50" text-anchor="middle" class="muted" font-size="12">bd blocked · bd dep tree</text>
+    </g>
+    <g transform="translate(630,0)">
+      <rect class="card-warm" x="0" y="0" width="180" height="64" rx="8"/>
+      <text x="90" y="28" text-anchor="middle" class="ink ttl" font-size="15">deferred</text>
+      <text x="90" y="50" text-anchor="middle" class="muted" font-size="12">bd defer --until=…</text>
+    </g>
+    <g transform="translate(840,0)">
+      <rect class="card" x="0" y="0" width="180" height="64" rx="8"/>
+      <text x="90" y="28" text-anchor="middle" class="ink ttl" font-size="15">closed</text>
+      <text x="90" y="50" text-anchor="middle" class="muted" font-size="12">bd close --reason "…"</text>
+    </g>
+    <!-- Custom status note -->
+    <g transform="translate(1050,0)">
+      <rect class="card" x="0" y="0" width="180" height="64" rx="8"/>
+      <text x="90" y="24" text-anchor="middle" class="ink ttl" font-size="14">+ status.custom</text>
+      <text x="90" y="44" text-anchor="middle" class="muted" font-size="11">awaiting_review</text>
+      <text x="90" y="58" text-anchor="middle" class="muted" font-size="11">qa_testing · on_hold</text>
+    </g>
+    <!-- Arrows -->
+    <path d="M 180,32 L 210,32" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <path d="M 390,32 L 420,32" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <path d="M 600,32 L 630,32" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <path d="M 810,32 L 840,32" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <!-- reopen loop -->
+    <path d="M 930,0 Q 930,-18 510,-18 Q 90,-18 90,0" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)" stroke-dasharray="4 3"/>
+    <text x="510" y="-22" text-anchor="middle" class="muted" font-size="12">bd reopen</text>
+  </g>
+
+  <!-- ============= DEPENDENCY SCHEDULING BAND ============= -->
+  <text x="48" y="1030" class="ink lbl" font-size="13">DEPENDENCY-DRIVEN SCHEDULING · what bd ready computes (Area 6)</text>
+  <line class="rule" x1="48" y1="1038" x2="1232" y2="1038"/>
+
+  <g transform="translate(48,1054)">
+    <rect class="card" x="0" y="0" width="282" height="110" rx="8"/>
+    <rect class="danger" x="0" y="0" width="6" height="110"/>
+    <text x="20" y="28" class="ink ttl" font-size="15">Blocking edges</text>
+    <text x="20" y="50" class="muted" font-size="12">blocks · conditional-blocks · waits-for</text>
+    <text x="20" y="70" class="muted" font-size="12">Hard blockers — exclude target from ready.</text>
+    <text x="20" y="92" class="ink mono" font-size="12">bd dep add &lt;to&gt; &lt;from&gt;</text>
+  </g>
+  <g transform="translate(348,1054)">
+    <rect class="card" x="0" y="0" width="282" height="110" rx="8"/>
+    <rect class="accent" x="0" y="0" width="6" height="110"/>
+    <text x="20" y="28" class="ink ttl" font-size="15">Structural edges</text>
+    <text x="20" y="50" class="muted" font-size="12">parent-child · epic hierarchy</text>
+    <text x="20" y="70" class="muted" font-size="12">Affects ready work; not a hard blocker.</text>
+    <text x="20" y="92" class="ink mono" font-size="12">bd create --parent bd-x</text>
+  </g>
+  <g transform="translate(648,1054)">
+    <rect class="card" x="0" y="0" width="282" height="110" rx="8"/>
+    <text x="20" y="28" class="ink ttl" font-size="15">Soft / audit edges</text>
+    <text x="20" y="50" class="muted" font-size="12">related · relates-to · duplicates</text>
+    <text x="20" y="70" class="muted" font-size="12">discovered-from · supersedes · tracks</text>
+    <text x="20" y="92" class="ink mono" font-size="12">bd dep relate a b</text>
+  </g>
+  <g transform="translate(948,1054)">
+    <rect class="card-cool" x="0" y="0" width="282" height="110" rx="8"/>
+    <rect class="teal" x="0" y="0" width="6" height="110"/>
+    <text x="20" y="28" class="ink ttl" font-size="15">Ready work output</text>
+    <text x="20" y="50" class="muted" font-size="12">open · no active blockers · not deferred</text>
+    <text x="20" y="70" class="muted" font-size="12">not in_progress · not hooked</text>
+    <text x="20" y="92" class="ink mono" font-size="12">bd ready --claim --json</text>
+  </g>
+
+  <!-- ============= AGENT LOOP BAND ============= -->
+  <text x="48" y="1200" class="ink lbl" font-size="13">AGENT LOOP &amp; MEMORY · context recovery and hand-off (Area 9)</text>
+  <line class="rule" x1="48" y1="1208" x2="1232" y2="1208"/>
+
+  <g transform="translate(48,1224)">
+    <!-- Five-step loop drawn as pill chain -->
+    <g>
+      <rect class="card-soft" x="0" y="0" width="220" height="68" rx="34"/>
+      <text x="110" y="28" text-anchor="middle" class="ink ttl" font-size="14">1 · bd prime</text>
+      <text x="110" y="50" text-anchor="middle" class="muted" font-size="11">inject workflow context + memories</text>
+    </g>
+    <g transform="translate(240,0)">
+      <rect class="card-soft" x="0" y="0" width="220" height="68" rx="34"/>
+      <text x="110" y="28" text-anchor="middle" class="ink ttl" font-size="14">2 · bd ready</text>
+      <text x="110" y="50" text-anchor="middle" class="muted" font-size="11">pick claimable work</text>
+    </g>
+    <g transform="translate(480,0)">
+      <rect class="card-soft" x="0" y="0" width="220" height="68" rx="34"/>
+      <text x="110" y="28" text-anchor="middle" class="ink ttl" font-size="14">3 · bd update --claim</text>
+      <text x="110" y="50" text-anchor="middle" class="muted" font-size="11">atomic hand-off</text>
+    </g>
+    <g transform="translate(720,0)">
+      <rect class="card-soft" x="0" y="0" width="220" height="68" rx="34"/>
+      <text x="110" y="28" text-anchor="middle" class="ink ttl" font-size="14">4 · bd comment</text>
+      <text x="110" y="50" text-anchor="middle" class="muted" font-size="11">narrate progress</text>
+    </g>
+    <g transform="translate(960,0)">
+      <rect class="card-soft" x="0" y="0" width="220" height="68" rx="34"/>
+      <text x="110" y="28" text-anchor="middle" class="ink ttl" font-size="14">5 · bd close</text>
+      <text x="110" y="50" text-anchor="middle" class="muted" font-size="11">--reason · --claim-next</text>
+    </g>
+    <!-- Chain arrows -->
+    <path d="M 220,34 L 240,34" stroke="#4338ca" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <path d="M 460,34 L 480,34" stroke="#4338ca" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <path d="M 700,34 L 720,34" stroke="#4338ca" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <path d="M 940,34 L 960,34" stroke="#4338ca" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <!-- Loop back -->
+    <path d="M 1070,68 Q 1070,98 590,98 Q 110,98 110,68" stroke="#4338ca" stroke-width="1.5" fill="none" marker-end="url(#arrow)" stroke-dasharray="4 3"/>
+    <text x="590" y="116" text-anchor="middle" class="accent muted" font-size="12">repeat · bd ready --claim-next</text>
+  </g>
+
+  <!-- Memory callout -->
+  <g transform="translate(48,1312)">
+    <rect class="card" x="0" y="0" width="1184" height="58" rx="8"/>
+    <text x="20" y="24" class="ink ttl" font-size="14">Persistent memory (survives compaction)</text>
+    <text x="20" y="46" class="ink mono" font-size="13">bd remember "&lt;insight&gt;" --key &lt;slug&gt;     ·     bd recall &lt;slug&gt;     ·     bd memories     ·     bd forget &lt;slug&gt;     ·     bd audit record (append-only .beads/interactions.jsonl)</text>
+  </g>
+
+  <!-- ============= ADVANCED WORKFLOW SUBSYSTEM ============= -->
+  <text x="48" y="1404" class="ink lbl" font-size="13">ADVANCED WORKFLOW SUBSYSTEM · formulas → instances → control → completion (Areas 10–13)</text>
+  <line class="rule" x1="48" y1="1412" x2="1232" y2="1412"/>
+
+  <!-- Layer A: formulas -->
+  <g transform="translate(48,1428)">
+    <rect class="card-warm" x="0" y="0" width="280" height="100" rx="8"/>
+    <text x="20" y="26" class="ink ttl" font-size="15">Formula (.formula.toml)</text>
+    <text x="20" y="46" class="muted" font-size="12">steps · vars · extends · compose</text>
+    <text x="20" y="64" class="muted" font-size="12">advice · aspects · expand · gate</text>
+    <text x="20" y="86" class="ink mono" font-size="12">bd formula list|show|convert</text>
+  </g>
+  <g transform="translate(348,1428)">
+    <rect class="card-warm" x="0" y="0" width="280" height="100" rx="8"/>
+    <text x="20" y="26" class="ink ttl" font-size="15">Proto (solid template)</text>
+    <text x="20" y="46" class="muted" font-size="12">Ephemeral by default · label: template</text>
+    <text x="20" y="66" class="muted" font-size="12">In-memory TemplateSubgraph at use time</text>
+    <text x="20" y="86" class="ink mono" font-size="12">bd cook &lt;formula&gt; [--persist LEGACY]</text>
+  </g>
+  <!-- Composition above -->
+  <g transform="translate(648,1428)">
+    <rect class="card-warm" x="0" y="0" width="280" height="100" rx="8"/>
+    <text x="20" y="26" class="ink ttl" font-size="15">Composition (cook-time)</text>
+    <text x="20" y="46" class="muted" font-size="12">extends (cycle-detected)</text>
+    <text x="20" y="64" class="muted" font-size="12">advice (glob match · no self-match)</text>
+    <text x="20" y="82" class="muted" font-size="12">aspects · expand (max depth 5)</text>
+  </g>
+  <g transform="translate(948,1428)">
+    <rect class="card-warm" x="0" y="0" width="282" height="100" rx="8"/>
+    <text x="20" y="26" class="ink ttl" font-size="15">Validation (Formula.Validate)</text>
+    <text x="20" y="46" class="muted" font-size="12">Rejects: dup step IDs · bad extends</text>
+    <text x="20" y="64" class="muted" font-size="12">required+default · dangling deps</text>
+    <text x="20" y="84" class="muted" font-size="12">bad gates/conditions/on_complete</text>
+  </g>
+
+  <!-- Arrows: formula → proto -->
+  <path d="M 328,1478 L 348,1478" stroke="#b45309" stroke-width="1.5" fill="none" marker-end="url(#arrowAmber)"/>
+
+  <!-- Layer B: instances (molecules + wisps) -->
+  <g transform="translate(48,1550)">
+    <rect class="card-cool" x="0" y="0" width="280" height="100" rx="8"/>
+    <rect class="teal" x="0" y="0" width="6" height="100"/>
+    <text x="20" y="26" class="ink ttl" font-size="15">Molecule (liquid)</text>
+    <text x="20" y="46" class="muted" font-size="12">Poured · durable · synced</text>
+    <text x="20" y="64" class="muted" font-size="12">Root type: molecule · children parent-child</text>
+    <text x="20" y="86" class="ink mono" font-size="12">bd mol pour &lt;proto|formula&gt;</text>
+  </g>
+  <g transform="translate(348,1550)">
+    <rect class="card-warm" x="0" y="0" width="280" height="100" rx="8"/>
+    <rect class="amber" x="0" y="0" width="6" height="100"/>
+    <text x="20" y="26" class="ink ttl" font-size="15">Wisp (vapor)</text>
+    <text x="20" y="46" class="muted" font-size="12">Ephemeral · dolt_ignored · never synced</text>
+    <text x="20" y="64" class="muted" font-size="12">IDs: bd-wisp-x7k · WispType categories</text>
+    <text x="20" y="86" class="ink mono" font-size="12">bd mol wisp &lt;proto|formula&gt;</text>
+  </g>
+  <g transform="translate(648,1550)">
+    <rect class="card" x="0" y="0" width="280" height="100" rx="8"/>
+    <text x="20" y="26" class="ink ttl" font-size="15">Bonds (Area 12)</text>
+    <text x="20" y="46" class="muted" font-size="12">sequential → blocks</text>
+    <text x="20" y="64" class="muted" font-size="12">parallel → parent-child</text>
+    <text x="20" y="82" class="muted" font-size="12">conditional → conditional-blocks</text>
+    <text x="20" y="100" class="ink mono" font-size="12">bd mol bond A B --type …</text>
+  </g>
+  <g transform="translate(948,1550)">
+    <rect class="card" x="0" y="0" width="282" height="100" rx="8"/>
+    <text x="20" y="26" class="ink ttl" font-size="15">Gates (Area 12)</text>
+    <text x="20" y="46" class="muted" font-size="12">human · timer · gh:run · gh:pr</text>
+    <text x="20" y="64" class="muted" font-size="12">(bead disabled · mail not implemented in v1.1.0)</text>
+    <text x="20" y="86" class="ink mono" font-size="12">bd gate create · bd gate check</text>
+  </g>
+
+  <!-- Arrows: proto → mol, proto → wisp -->
+  <path d="M 200,1528 Q 200,1540 188,1550" stroke="#0d9488" stroke-width="1.5" fill="none" marker-end="url(#arrowTeal)"/>
+  <path d="M 460,1528 Q 460,1540 470,1550" stroke="#b45309" stroke-width="1.5" fill="none" marker-end="url(#arrowAmber)"/>
+
+  <!-- Layer C: completion / cleanup -->
+  <g transform="translate(48,1672)">
+    <rect class="card-cool" x="0" y="0" width="280" height="100" rx="8"/>
+    <text x="20" y="26" class="ink ttl" font-size="15">Distill · evidence preserving</text>
+    <text x="20" y="48" class="muted" font-size="12">epic → .formula.json (reverse pour)</text>
+    <text x="20" y="68" class="muted" font-size="12">--var key=value abstracts literals</text>
+    <text x="20" y="88" class="ink mono" font-size="12">bd mol distill &lt;epic&gt; &lt;name&gt;</text>
+  </g>
+  <g transform="translate(348,1672)">
+    <rect class="card-cool" x="0" y="0" width="280" height="100" rx="8"/>
+    <text x="20" y="26" class="ink ttl" font-size="15">Squash · evidence preserving</text>
+    <text x="20" y="48" class="muted" font-size="12">wisp children → one permanent digest</text>
+    <text x="20" y="68" class="muted" font-size="12">atomic · auto-closes wisp root</text>
+    <text x="20" y="88" class="ink mono" font-size="12">bd mol squash &lt;mol&gt; --summary …</text>
+  </g>
+  <g transform="translate(648,1672)">
+    <rect class="card-danger" x="0" y="0" width="280" height="100" rx="8"/>
+    <text x="20" y="26" class="ink ttl" font-size="15">Burn · destructive</text>
+    <text x="20" y="48" class="muted" font-size="12">Hard delete · no digest · no undo</text>
+    <text x="20" y="68" class="muted" font-size="12">wisp = batch delete · mol = cascade</text>
+    <text x="20" y="88" class="ink mono" font-size="12">bd mol burn &lt;mol&gt; --force</text>
+  </g>
+  <g transform="translate(948,1672)">
+    <rect class="card" x="0" y="0" width="282" height="100" rx="8"/>
+    <text x="20" y="26" class="ink ttl" font-size="15">Stale &amp; history shape</text>
+    <text x="20" y="48" class="muted" font-size="12">bd mol stale · bd stale · bd prune</text>
+    <text x="20" y="66" class="muted" font-size="12">bd gc · bd compact --days N</text>
+    <text x="20" y="86" class="muted" font-size="12">bd flatten (irreversible)</text>
+  </g>
+
+  <!-- Arrows: mol/wisp → terminal -->
+  <path d="M 188,1650 Q 188,1662 188,1672" stroke="#475569" stroke-width="1.2" fill="none" marker-end="url(#arrow)" stroke-dasharray="3 3"/>
+  <path d="M 488,1650 Q 488,1662 488,1672" stroke="#475569" stroke-width="1.2" fill="none" marker-end="url(#arrow)" stroke-dasharray="3 3"/>
+
+  <!-- ============= FOOTER ============= -->
+  <line class="rule" x1="48" y1="1792" x2="1232" y2="1792"/>
+  <text x="48" y="1818" class="ink lbl" font-size="13">SOURCE &amp; EVIDENCE</text>
+  <text x="48" y="1838" class="muted" font-size="13">Beads v1.1.0 · commit 8e4e59d39f3459a43cf21a3236a13eca4dd874f7 · <tspan class="mono">github.com/gastownhall/beads/tree/v1.1.0</tspan></text>
+  <text x="48" y="1858" class="faint" font-size="12">Coverage (1-5): Area 1 actors · Area 2 Dolt+JSONL+Wisp stores · Area 3 install · Area 4 issue model · Area 5 lifecycle</text>
+  <text x="48" y="1878" class="faint" font-size="12">Coverage (6-10): Area 6 scheduling · Area 7 read/query · Area 8 dolt push/pull · Area 9 agent loop · Area 10 formula+proto</text>
+  <text x="48" y="1898" class="faint" font-size="12">Coverage (11-14): Area 11 mol+wisp+promote · Area 12 bonds+gates · Area 13 distill/squash/burn · Area 14 ops+doctor</text>
+  <text x="48" y="1918" class="faint" font-size="12">Docs: CLI_REFERENCE · INSTALLING · SYNC_CONCEPTS · ARCHITECTURE · ADVANCED · MOLECULES · RECOVERY · CONFIG · CHANGELOG</text>
+</svg>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 1740" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" text-rendering="geometricPrecision" role="img" aria-labelledby="cs-title cs-desc">
+  <title id="cs-title">Beads v1.1.0 — Cheatsheet (GLM)</title>
+  <desc id="cs-desc">Single-image operational reference for Beads v1.1.0. Covers the 14 coverage areas: purpose, storage and truth, install, issue model, daily lifecycle, dependency graph and ready work, finding and understanding work, collaboration and sync, agent workflow and memory, formulas, workflow instances (protos, molecules, wisps), advanced control (bonds and gates), completion and cleanup, and operations and safety. Source: github.com/gastownhall/beads/tree/v1.1.0.</desc>
+
+  <defs>
+    <style>
+      .ink { fill: #0f172a; }
+      .paper { fill: #ffffff; }
+      .muted { fill: #475569; }
+      .faint { fill: #94a3b8; }
+      .card { fill: #f8fafc; stroke: #e2e8f0; stroke-width: 1; }
+      .card-adv { fill: #fffaf0; stroke: #fde68a; stroke-width: 1; }
+      .head { fill: #0f172a; }
+      .rule { stroke: #e2e8f0; stroke-width: 1; fill: none; }
+      .accent { fill: #4338ca; }
+      .accent-soft { fill: #eef2ff; }
+      .teal { fill: #0d9488; }
+      .teal-soft { fill: #ccfbf1; }
+      .amber { fill: #b45309; }
+      .amber-soft { fill: #fef3c7; }
+      .slate-soft { fill: #f1f5f9; }
+      .mono { font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, Menlo, monospace; }
+      .ttl { font-weight: 700; }
+      .lbl { font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+      .crisp { shape-rendering: crispEdges; }
+    </style>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="arrTeal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0d9488"/>
+    </marker>
+  </defs>
+
+  <!-- ============= HEADER ============= -->
+  <rect class="paper crisp" x="0" y="0" width="1240" height="1740"/>
+  <rect class="head crisp" x="0" y="0" width="1240" height="118"/>
+  <text x="48" y="56" fill="#ffffff" font-size="34" font-weight="700" letter-spacing="0.02em">bd (beads) — Operational Cheatsheet</text>
+  <text x="48" y="92" fill="#cbd5e1" font-size="17">A Dolt-powered issue tracker for AI-supervised coding workflows.</text>
+  <g transform="translate(980,46)">
+    <rect class="accent" x="0" y="0" width="212" height="40" rx="6"/>
+    <text x="106" y="27" text-anchor="middle" fill="#ffffff" font-size="17" font-weight="700">Beads v1.1.0</text>
+    <text x="106" y="68" text-anchor="middle" class="faint" font-size="13">commit 8e4e59d3</text>
+  </g>
+
+  <!-- ============= FIRST-DAY COMMANDS ============= -->
+  <text x="48" y="156" class="ink"><tspan class="lbl" font-size="15">First day — the work pump</tspan></text>
+  <line class="rule" x1="48" y1="166" x2="1192" y2="166"/>
+
+  <g transform="translate(48,182)">
+    <!-- card 1 ready -->
+    <rect class="card" x="0" y="0" width="278" height="100" rx="6"/>
+    <rect class="teal" x="0" y="0" width="6" height="100" rx="0"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">Find ready work</text>
+    <text x="20" y="56" class="ink mono" font-size="14">bd ready</text>
+    <text x="20" y="78" class="muted" font-size="12">bd ready --claim --json</text>
+    <text x="20" y="94" class="muted" font-size="12">bd ready --mol bd-patrol</text>
+  </g>
+  <g transform="translate(338,182)">
+    <rect class="card" x="0" y="0" width="278" height="100" rx="6"/>
+    <rect class="teal" x="0" y="0" width="6" height="100"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">Create</text>
+    <text x="20" y="56" class="ink mono" font-size="14">bd create "Title" -t task -p 2</text>
+    <text x="20" y="76" class="muted mono" font-size="11">bd create "Bug" -t bug</text>
+    <text x="20" y="90" class="muted mono" font-size="11">  --deps discovered-from:bd-7</text>
+  </g>
+  <g transform="translate(628,182)">
+    <rect class="card" x="0" y="0" width="278" height="100" rx="6"/>
+    <rect class="teal" x="0" y="0" width="6" height="100"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">Claim &amp; update</text>
+    <text x="20" y="56" class="ink mono" font-size="14">bd update &lt;id&gt; --claim</text>
+    <text x="20" y="78" class="muted" font-size="12">bd update &lt;id&gt; -s in_progress -a alice</text>
+    <text x="20" y="94" class="muted" font-size="12">bd comment &lt;id&gt; "progress note"</text>
+  </g>
+  <g transform="translate(918,182)">
+    <rect class="card" x="0" y="0" width="278" height="100" rx="6"/>
+    <rect class="teal" x="0" y="0" width="6" height="100"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">Close &amp; reopen</text>
+    <text x="20" y="56" class="ink mono" font-size="14">bd close &lt;id&gt; --reason "done"</text>
+    <text x="20" y="78" class="muted" font-size="12">bd close &lt;id&gt; --continue --suggest-next</text>
+    <text x="20" y="94" class="muted" font-size="12">bd reopen &lt;id&gt;</text>
+  </g>
+
+  <!-- ============= STORAGE TRUTH STRIP ============= -->
+  <g transform="translate(48,304)">
+    <rect class="slate-soft" x="0" y="0" width="1144" height="86" rx="6"/>
+    <text x="20" y="28" class="ink ttl" font-size="15"><tspan class="lbl">Storage truth (memorize this)</tspan></text>
+    <text x="20" y="54" class="ink" font-size="14">Dolt database under .beads/dolt/ is the <tspan font-weight="700">source of truth</tspan>.</text>
+    <text x="20" y="74" class="muted" font-size="13">.beads/issues.jsonl is a passive export — never the sync channel. Source Git lives under refs/heads/*; beads sync lives under refs/dolt/data — fully separate.</text>
+  </g>
+
+  <!-- ============= CARD GRID ============= -->
+  <text x="48" y="424" class="ink" font-size="15"><tspan class="lbl">Coverage map — 14 areas</tspan></text>
+  <line class="rule" x1="48" y1="434" x2="1192" y2="434"/>
+
+  <!-- Row 1 -->
+  <g transform="translate(48,446)">
+    <rect class="card" x="0" y="0" width="560" height="148" rx="6"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">1 · Purpose &amp; mental model</text>
+    <text x="20" y="54" class="ink" font-size="13">bd is a dependency-aware issue tracker. Users file work; agents claim,</text>
+    <text x="20" y="72" class="ink" font-size="13">do, and close it; bd records the audit trail. Built on Dolt for cell-level</text>
+    <text x="20" y="90" class="ink" font-size="13">history and native cross-machine sync.</text>
+    <text x="20" y="116" class="muted mono" font-size="12">bd status       bd info       bd quickstart</text>
+    <text x="20" y="134" class="muted" font-size="12">Actors: humans · agents (Claude, Cursor, Copilot, Codex, ...) · orchestrators.</text>
+  </g>
+  <g transform="translate(628,446)">
+    <rect class="card" x="0" y="0" width="560" height="148" rx="6"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">2 · Storage &amp; truth</text>
+    <text x="20" y="54" class="ink" font-size="13">Local Dolt DB &gt; auto-commit per write &gt; push/pull over a Dolt remote.</text>
+    <text x="20" y="74" class="ink" font-size="13">Wisp tables (wisps, wisp_*) are dolt_ignored: ephemeral, never synced.</text>
+    <text x="20" y="100" class="muted mono" font-size="12">bd dolt push     bd dolt pull    bd dolt remote list</text>
+    <text x="20" y="120" class="muted mono" font-size="12">bd export        bd import        bd vc status</text>
+    <text x="20" y="138" class="muted" font-size="12">refs/dolt/data is separate from refs/heads/* on the Git remote.</text>
+  </g>
+
+  <!-- Row 2 -->
+  <g transform="translate(48,606)">
+    <rect class="card" x="0" y="0" width="560" height="148" rx="6"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">3 · Install &amp; repository setup</text>
+    <text x="20" y="50" class="ink mono" font-size="12">brew install beads            # macOS/Linux</text>
+    <text x="20" y="68" class="ink mono" font-size="12">irm https://raw.githubusercontent.com/</text>
+    <text x="20" y="84" class="ink mono" font-size="12">  gastownhall/beads/main/install.ps1 | iex  # Windows</text>
+    <text x="20" y="102" class="ink mono" font-size="12">cd project  &amp;&amp;  bd init --quiet</text>
+    <text x="20" y="120" class="muted mono" font-size="12">bd bootstrap           # fresh clone / recovery</text>
+    <text x="20" y="138" class="muted" font-size="11">bd setup claude · bd version · bd doctor</text>
+  </g>
+  <g transform="translate(628,606)">
+    <rect class="card" x="0" y="0" width="560" height="148" rx="6"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">4 · Issue model</text>
+    <text x="20" y="50" class="ink" font-size="13"><tspan font-weight="700">Type</tspan>: bug · feature · task · epic · chore · decision (+ types.custom)</text>
+    <text x="20" y="68" class="ink" font-size="13"><tspan font-weight="700">Status</tspan>: open · in_progress · blocked · deferred · closed (+ status.custom)</text>
+    <text x="20" y="86" class="ink" font-size="13"><tspan font-weight="700">Priority</tspan>: 0–4 (P0 critical → P4 backlog; default P2)</text>
+    <text x="20" y="106" class="muted mono" font-size="12">bd show &lt;id&gt; --long     bd types     bd statuses</text>
+    <text x="20" y="124" class="muted mono" font-size="12">bd label add|remove|list   bd dep add|list|tree|cycles</text>
+    <text x="20" y="142" class="muted" font-size="12">IDs are content-hash; rename-prefix rewrites IDs and references.</text>
+  </g>
+
+  <!-- Row 3 -->
+  <g transform="translate(48,766)">
+    <rect class="card" x="0" y="0" width="560" height="148" rx="6"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">5 · Daily lifecycle</text>
+    <text x="20" y="54" class="ink mono" font-size="13">bd create  →  bd update --claim  →  bd update -s in_progress</text>
+    <text x="20" y="74" class="ink mono" font-size="13">  →  bd comment / bd note  →  bd close --reason "..."  →  bd reopen</text>
+    <text x="20" y="100" class="muted mono" font-size="12">bd defer &lt;id&gt; --until=tomorrow      bd undefer &lt;id&gt;</text>
+    <text x="20" y="120" class="muted mono" font-size="12">bd assign &lt;id&gt; alice      bd priority &lt;id&gt; 1      bd link a b  # b blocks a</text>
+    <text x="20" y="138" class="muted" font-size="12">Hand-off atomically with --claim; --claim-next auto-claims after close.</text>
+  </g>
+  <g transform="translate(628,766)">
+    <rect class="card" x="0" y="0" width="560" height="148" rx="6"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">6 · Graph &amp; ready work</text>
+    <text x="20" y="52" class="ink" font-size="13"><tspan font-weight="700">Blocking</tspan>: blocks · conditional-blocks · waits-for</text>
+    <text x="20" y="70" class="ink" font-size="13"><tspan font-weight="700">Structural</tspan>: parent-child (open parent keeps children unready)</text>
+    <text x="20" y="88" class="ink" font-size="13"><tspan font-weight="700">Soft</tspan>: related · relates-to · duplicates · discovered-from · supersedes…</text>
+    <text x="20" y="112" class="muted mono" font-size="12">bd dep add bd-2 bd-1              # bd-2 depends on bd-1</text>
+    <text x="20" y="130" class="muted mono" font-size="12">bd blocked     bd dep tree bd-x     bd dep cycles     bd graph check</text>
+  </g>
+
+  <!-- Row 4 -->
+  <g transform="translate(48,926)">
+    <rect class="card" x="0" y="0" width="560" height="148" rx="6"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">7 · Find &amp; understand work</text>
+    <text x="20" y="54" class="ink mono" font-size="13">bd ready                    # claimable, no active blockers</text>
+    <text x="20" y="74" class="ink mono" font-size="13">bd list -s open --ready -p 1</text>
+    <text x="20" y="94" class="ink mono" font-size="13">bd search "auth" --status all</text>
+    <text x="20" y="114" class="muted mono" font-size="12">bd show &lt;id&gt; --thread   bd history &lt;id&gt;   bd count --by-status</text>
+    <text x="20" y="132" class="muted" font-size="12">bd stale · bd orphans · bd lint · bd audit record (append-only JSONL)</text>
+  </g>
+  <g transform="translate(628,926)">
+    <rect class="card" x="0" y="0" width="560" height="148" rx="6"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">8 · Collaboration &amp; sync</text>
+    <text x="20" y="54" class="ink" font-size="13">Dolt remote (often Git origin) replicates issue history under refs/dolt/data.</text>
+    <text x="20" y="78" class="ink mono" font-size="13">bd dolt pull            # before work</text>
+    <text x="20" y="98" class="ink mono" font-size="13">bd dolt push            # to share</text>
+    <text x="20" y="120" class="muted mono" font-size="12">bd dolt remote add origin &lt;url&gt;     bd bootstrap     bd vc conflicts</text>
+    <text x="20" y="138" class="muted" font-size="12">Worktrees: bd worktree create|list|remove.  Multi-repo: bd repo add|sync.</text>
+  </g>
+
+  <!-- Row 5 -->
+  <g transform="translate(48,1086)">
+    <rect class="card" x="0" y="0" width="560" height="148" rx="6"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">9 · Agent workflow &amp; memory</text>
+    <text x="20" y="54" class="ink mono" font-size="13">bd prime                 # SessionStart context (~1–2k tokens)</text>
+    <text x="20" y="74" class="ink mono" font-size="13">bd remember "&lt;insight&gt;" --key &lt;slug&gt;   bd recall &lt;slug&gt;</text>
+    <text x="20" y="94" class="ink mono" font-size="13">bd comment &lt;id&gt; "&lt;progress&gt;"           bd audit record</text>
+    <text x="20" y="116" class="muted mono" font-size="12">bd setup claude|codex|cursor|copilot|gemini|aider|...</text>
+    <text x="20" y="134" class="muted" font-size="12">Hand-off: bd update --claim → do work → bd close --reason → bd ready.</text>
+  </g>
+  <g transform="translate(628,1086)">
+    <rect class="card-adv" x="0" y="0" width="560" height="148" rx="6"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">10 · Formulas  <tspan class="amber" font-size="12">advanced</tspan></text>
+    <text x="20" y="52" class="ink" font-size="13">TOML/JSON workflows: steps, vars, extends, compose, advice.</text>
+    <text x="20" y="72" class="ink mono" font-size="13">bd formula list | show | convert --all</text>
+    <text x="20" y="92" class="ink mono" font-size="13">bd cook &lt;formula&gt;              # inspect proto</text>
+    <text x="20" y="112" class="muted mono" font-size="12">vars: {{name}} · condition: {{var}} == val · loops</text>
+    <text x="20" y="130" class="muted" font-size="11">Search paths: .beads/formulas · &lt;repo&gt;/.beads/formulas</text>
+    <text x="20" y="144" class="muted" font-size="11">  · ~/.beads/formulas</text>
+  </g>
+
+  <!-- Row 6 -->
+  <g transform="translate(48,1246)">
+    <rect class="card-adv" x="0" y="0" width="560" height="148" rx="6"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">11 · Workflow instances  <tspan class="amber" font-size="12">advanced</tspan></text>
+    <text x="20" y="54" class="ink" font-size="13"><tspan font-weight="700">Proto</tspan> (solid): template epic. <tspan font-weight="700">Molecule</tspan> (liquid): poured, durable.</text>
+    <text x="20" y="72" class="ink" font-size="13"><tspan font-weight="700">Wisp</tspan> (vapor): ephemeral; stored in dolt_ignored tables, never synced.</text>
+    <text x="20" y="96" class="ink mono" font-size="13">bd mol pour mol-feature --var name=auth</text>
+    <text x="20" y="116" class="ink mono" font-size="13">bd mol wisp mol-patrol   ·   bd mol wisp list   ·   bd mol wisp gc</text>
+    <text x="20" y="134" class="muted" font-size="12">Promote a one-shot wisp to durable: bd promote &lt;wisp-id&gt;.</text>
+  </g>
+  <g transform="translate(628,1246)">
+    <rect class="card-adv" x="0" y="0" width="560" height="148" rx="6"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">12 · Bonds &amp; gates  <tspan class="amber" font-size="12">advanced</tspan></text>
+    <text x="20" y="52" class="ink" font-size="13"><tspan font-weight="700">Bonds</tspan> (sequential · parallel · conditional) join protos/molecules.</text>
+    <text x="20" y="74" class="ink mono" font-size="13">bd mol bond &lt;A&gt; &lt;B&gt; --type parallel --ref arm-{{name}}</text>
+    <text x="20" y="96" class="ink" font-size="13"><tspan font-weight="700">Gates</tspan>: human · timer · gh:run · gh:pr (bead disabled in v1.1.0).</text>
+    <text x="20" y="118" class="ink mono" font-size="13">bd gate create --type=human --blocks bd-9</text>
+    <text x="20" y="136" class="muted mono" font-size="12">bd gate check · bd gate resolve · bd ready --gated</text>
+  </g>
+
+  <!-- Row 7 -->
+  <g transform="translate(48,1406)">
+    <rect class="card-adv" x="0" y="0" width="560" height="148" rx="6"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">13 · Completion &amp; cleanup  <tspan class="amber" font-size="12">advanced</tspan></text>
+    <text x="20" y="52" class="ink mono" font-size="13">bd mol distill &lt;epic&gt; &lt;formula&gt;     # epic → formula</text>
+    <text x="20" y="70" class="ink mono" font-size="13">bd mol squash &lt;mol&gt; --summary "..."  # → digest</text>
+    <text x="20" y="88" class="ink mono" font-size="13">bd mol burn &lt;mol&gt; --force            # delete</text>
+    <text x="20" y="108" class="ink mono" font-size="12">bd mol stale · bd stale · bd prune · bd purge</text>
+    <text x="20" y="126" class="ink mono" font-size="12">bd gc · bd compact · bd flatten</text>
+    <text x="20" y="144" class="muted" font-size="11">Squash auto-closes wisp root; burn has no undo.</text>
+  </g>
+  <g transform="translate(628,1406)">
+    <rect class="card" x="0" y="0" width="560" height="148" rx="6"/>
+    <text x="20" y="28" class="ink ttl" font-size="16">14 · Operations &amp; safety</text>
+    <text x="20" y="52" class="ink mono" font-size="13">bd doctor              # start here — health</text>
+    <text x="20" y="70" class="ink mono" font-size="13">bd config set|get|list · drift · apply</text>
+    <text x="20" y="88" class="ink mono" font-size="13">bd backup init|sync|restore</text>
+    <text x="20" y="106" class="ink mono" font-size="13">bd migrate schema · bd recompute-blocked</text>
+    <text x="20" y="126" class="muted" font-size="11">Caution: --cascade, flatten, mol burn are irreversible.</text>
+    <text x="20" y="142" class="muted" font-size="11">Never treat issues.jsonl as sync — use bd dolt push/pull.</text>
+  </g>
+
+  <!-- ============= FOOTER ============= -->
+  <line class="rule" x1="48" y1="1572" x2="1192" y2="1572"/>
+  <text x="48" y="1598" class="ink ttl" font-size="14"><tspan class="lbl">Source &amp; evidence</tspan></text>
+  <text x="48" y="1622" class="muted" font-size="13">Official Beads release v1.1.0 · commit 8e4e59d39f3459a43cf21a3236a13eca4dd874f7.</text>
+  <text x="48" y="1642" class="muted mono" font-size="13">github.com/gastownhall/beads/tree/v1.1.0</text>
+  <text x="48" y="1662" class="muted" font-size="12">Per-area docs: CLI_REFERENCE · INSTALLING · SYNC_CONCEPTS · ARCHITECTURE · ADVANCED</text>
+  <text x="48" y="1680" class="muted" font-size="12">  · MOLECULES · RECOVERY · CONFIG · CHANGELOG · PROJECT_CHARTER</text>
+  <text x="48" y="1710" class="faint" font-size="12">Information designer: GLM-5.2 Max. Independently designed; part of a two-designer comparison set. Portable single-image SVG; no external assets.</text>
+</svg>

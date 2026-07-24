@@ -1,0 +1,38 @@
+include README.md
+include LICENSE
+include pyproject.toml
+
+include docs/mba/README.md
+include docs/mba/charter.md
+include docs/mba/non-technical-flow.md
+include docs/mba/technical-flow.md
+include docs/mba/startup-setup.md
+include docs/mba/roadmap.md
+include docs/mba/implementation-status.md
+include docs/mba/assets/glm-cheatsheet.svg
+include docs/mba/assets/glm-diagram.svg
+include docs/mba/assets/glm-guide.html
+include docs/mba/assets/minimax-cheatsheet.svg
+include docs/mba/assets/minimax-diagram.svg
+include docs/mba/assets/minimax-guide.html
+recursive-include docs/mba/assets *
+include docs/beads/capabilities.md
+include docs/beads/evaluation.md
+include docs/USER_GUIDE.md
+
+include mba_foundation/resources/skills/mba/SKILL.md
+include mba_foundation/resources/opencode/opencode.json
+include mba_foundation/resources/opencode/agents/mba.md
+include mba_foundation/resources/opencode/agents/mba-worker.md
+
+recursive-include mba_foundation *.md
+recursive-include mba_primitives *.md
+
+include mba_version.py
+include conftest.py
+include pytest.ini
+
+global-exclude __pycache__
+global-exclude *.py[cod]
+global-exclude *.egg-info
+global-exclude .pytest_cache

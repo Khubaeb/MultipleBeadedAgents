@@ -1,0 +1,105 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "multiple-beaded-agents"
+dynamic = ["version"]
+description = "Multiple Beaded Agents (MBA) — orchestrate one or more AIs as a configurable project team on top of Beads."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Khubaeb" },
+]
+keywords = [
+    "beads",
+    "orchestration",
+    "multi-agent",
+    "workflow",
+    "evidence",
+    "convergence",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/Khubaeb/MultipleBeadedAgents"
+Issues = "https://github.com/Khubaeb/MultipleBeadedAgents/issues"
+
+[project.scripts]
+mba = "mba_foundation.__main__:main"
+mba-foundation = "mba_foundation.__main__:main"
+mba-runtime = "mba_runtime.__main__:main"
+mba-primitives = "mba_primitives.__main__:main"
+
+[tool.setuptools]
+py-modules = ["mba_version"]
+packages = [
+    "mba_foundation",
+    "mba_primitives",
+    "mba_runtime",
+]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = { attr = "mba_version.__version__" }
+
+[tool.setuptools.package-data]
+mba_foundation = [
+    "README.md",
+    "resources/skills/mba/SKILL.md",
+    "resources/opencode/opencode.json",
+    "resources/opencode/agents/mba.md",
+    "resources/opencode/agents/mba-worker.md",
+]
+mba_primitives = ["README.md"]
+mba_runtime = []
+
+
+
+[tool.setuptools.data-files]
+"share/doc/multiple-beaded-agents" = [
+    "README.md",
+    "LICENSE",
+]
+"share/doc/multiple-beaded-agents/docs" = [
+    "docs/USER_GUIDE.md",
+]
+"share/doc/multiple-beaded-agents/docs/mba" = [
+    "docs/mba/README.md",
+    "docs/mba/charter.md",
+    "docs/mba/non-technical-flow.md",
+    "docs/mba/technical-flow.md",
+    "docs/mba/startup-setup.md",
+    "docs/mba/roadmap.md",
+    "docs/mba/implementation-status.md",
+]
+"share/doc/multiple-beaded-agents/docs/mba/assets" = [
+    "docs/mba/assets/glm-cheatsheet.svg",
+    "docs/mba/assets/glm-diagram.svg",
+    "docs/mba/assets/glm-guide.html",
+    "docs/mba/assets/minimax-cheatsheet.svg",
+    "docs/mba/assets/minimax-diagram.svg",
+    "docs/mba/assets/minimax-guide.html",
+]
+"share/doc/multiple-beaded-agents/docs/beads" = [
+    "docs/beads/capabilities.md",
+    "docs/beads/evaluation.md",
+]
+"share/multiple-beaded-agents/skills/mba" = [
+    "mba_foundation/resources/skills/mba/SKILL.md",
+]
