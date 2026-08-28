@@ -266,13 +266,23 @@ class Manifest:
     installed_at: str  # ISO-8601 UTC timestamp
     preflight: PreflightEvidence
     files: tuple[ManagedFileEntry, ...] = ()
+    # Install-surface relpaths the user explicitly chose NOT to
+    # materialise (today: the private OpenCode launch files omitted at
+    # ``mba adopt``). Recorded so the choice is durable: ``mba
+    # upgrade`` preserves the omission instead of re-installing the
+    # target (see :func:`plan_upgrade`). Persisted only when non-empty
+    # so manifests written by flows without omissions stay
+    # byte-identical to the pre-``omitted`` schema; readers of either
+    # era tolerate the other (an absent key reads as ``()``; an
+    # unknown key is ignored by older ``from_dict``).
+    omitted: tuple[str, ...] = ()
     # In-memory only — not persisted by :meth:`to_dict`, never read by
     # :meth:`from_dict`. A tuple-of-pairs keeps the dataclass frozen
     # so :func:`dataclasses.replace` works.
     upstream_bodies: tuple[tuple[str, str], ...] = ()
 
     def to_dict(self) -> dict[str, object]:
-        return {
+        payload: dict[str, object] = {
             "schema": self.schema,
             "mba_version": self.mba_version,
             "source": self.source,
@@ -280,6 +290,9 @@ class Manifest:
             "preflight": self.preflight.to_dict(),
             "files": [entry.to_dict() for entry in self.files],
         }
+        if self.omitted:
+            payload["omitted"] = list(self.omitted)
+        return payload
 
     @classmethod
     def from_dict(cls, data: dict[str, object]) -> "Manifest":
@@ -299,6 +312,9 @@ class Manifest:
         if not isinstance(files_data, list):
             raise ValueError("manifest.files must be a list")
         files = tuple(ManagedFileEntry.from_dict(f) for f in files_data)  # type: ignore[arg-type]
+        omitted_data = data.get("omitted") or []
+        if not isinstance(omitted_data, list):
+            raise ValueError("manifest.omitted must be a list")
         return cls(
             schema=schema,
             mba_version=mba_version,
@@ -306,6 +322,7 @@ class Manifest:
             installed_at=installed_at,
             preflight=PreflightEvidence.from_dict(preflight_data),
             files=files,
+            omitted=tuple(str(relpath) for relpath in omitted_data),
         )
 
     def file_for(self, relpath: str) -> ManagedFileEntry | None:
@@ -1109,12 +1126,16 @@ class UpgradePlan:
 
     @property
     def is_noop(self) -> bool:
-        """True iff every entry is ``up_to_date`` (or ``install`` was
-        already applied — i.e. the manifest matches the upstream)."""
+        """True iff no entry needs a content write — every entry is
+        ``up_to_date``, or is an explicitly omitted target being
+        preserved (``skip``)."""
 
         if self.installed is None:
             return False  # not installed at all → not a noop
-        return all(entry.action == ACTION_UP_TO_DATE for entry in self.entries)
+        return all(
+            entry.action in (ACTION_UP_TO_DATE, ACTION_SKIP)
+            for entry in self.entries
+        )
 
 
 @dataclass(frozen=True)
@@ -1292,6 +1313,57 @@ def plan_upgrade(
         kind = upstream_entry.kind if upstream_entry is not None else (
             drift_entry.kind if drift_entry is not None else KIND_MANAGED_BLOCK
         )
+
+        if (
+            installed is not None
+            and relpath in installed.omitted
+            and installed.file_for(relpath) is None
+        ):
+            # The user explicitly chose NOT to materialise this target
+            # (recorded at ``mba adopt``). The choice is durable: while
+            # the target stays absent the upgrade preserves the
+            # omission; a file the user later created at the path is
+            # user-owned and must never be overwritten — that is a
+            # conflict requiring a manual decision, exactly like any
+            # other user-owned content (Charter §11).
+            target = root / relpath
+            if target.exists():
+                entries.append(
+                    UpgradePlanEntry(
+                        relpath=relpath,
+                        kind=kind,
+                        state=STATE_USER_EDITED,
+                        action=ACTION_CONFLICT,
+                        installed_sha=None,
+                        current_sha=(
+                            sha256_path(target) if target.is_file() else None
+                        ),
+                        upstream_sha=upstream_sha,
+                        reason=(
+                            "target was explicitly omitted at adoption but a "
+                            "file now exists at the path; it is user-owned — "
+                            "refusing to overwrite without a manual decision "
+                            "per docs/mba/charter.md §11"
+                        ),
+                    )
+                )
+            else:
+                entries.append(
+                    UpgradePlanEntry(
+                        relpath=relpath,
+                        kind=kind,
+                        state=STATE_NOT_INSTALLED,
+                        action=ACTION_SKIP,
+                        installed_sha=None,
+                        current_sha=None,
+                        upstream_sha=upstream_sha,
+                        reason=(
+                            "target was explicitly omitted at adoption and is "
+                            "still absent; preserving the omission"
+                        ),
+                    )
+                )
+            continue
 
         if drift_entry is None:
             # The installed manifest has this path but drift did not
@@ -1480,6 +1552,10 @@ def apply_upgrade(
     for entry in plan.entries:
         if entry.action == ACTION_UP_TO_DATE:
             continue
+        if entry.action == ACTION_SKIP:
+            # An explicitly omitted target that is still absent — the
+            # recorded omission is preserved; nothing to write.
+            continue
         if entry.action == ACTION_CONFLICT:
             # If we reach here in a non-dry-run call it means the
             # caller suppressed the conflict check above; refuse anyway.
@@ -1515,8 +1591,26 @@ def apply_upgrade(
                 f"refuse: unknown managed-file kind {entry.kind!r} for {entry.relpath}"
             )
 
-    # Persist the new manifest with the post-upgrade state.
-    write_manifest(root, upstream)
+    # Persist the new manifest with the post-upgrade state. Explicit
+    # omissions recorded by the installed manifest are carried forward
+    # (restricted to targets the new upstream still ships), and the
+    # omitted relpaths stay out of the recorded ``files`` so the
+    # manifest never claims a file that was deliberately not written.
+    new_manifest = upstream
+    if installed is not None and installed.omitted:
+        upstream_relpaths = {entry.relpath for entry in upstream.files}
+        carried = tuple(
+            relpath for relpath in installed.omitted if relpath in upstream_relpaths
+        )
+        if carried:
+            new_manifest = dataclasses.replace(
+                upstream,
+                files=tuple(
+                    entry for entry in upstream.files if entry.relpath not in carried
+                ),
+                omitted=carried,
+            )
+    write_manifest(root, new_manifest)
     return plan
 
 

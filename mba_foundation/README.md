@@ -21,6 +21,7 @@ Foundation utilities for installing and maintaining MBA in a target repository.
 ```bash
 python -m mba_foundation --version
 python -m mba_foundation init --root .
+python -m mba_foundation adopt --root . --dry-run
 python -m mba_foundation status --root .
 python -m mba_foundation upgrade --root . --dry-run
 python -m mba_foundation remove --root . --dry-run
@@ -30,6 +31,7 @@ python -m mba_foundation remove --root . --dry-run
 
 ```bash
 mba init
+mba adopt --dry-run
 mba status
 mba upgrade --dry-run
 mba remove --dry-run

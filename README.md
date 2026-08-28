@@ -31,7 +31,7 @@ flowchart LR
 | What is the quality rule? | Every executable Bead needs Doer-vs-Auditor convergence: verified fix or accepted proof. |
 | Does it run by itself? | No. MBA is instruction-driven, not a daemon. It runs when an AI/tool/harness follows the installed instructions. |
 | Can it run invisibly? | Yes, if the chosen harness launches the Orchestrator invisibly. MBA also launches OpenCode Doer/Auditor workers hidden by default. |
-| Is PyPI used now? | No. `v0.1.0` is installable from the public GitHub repo/tag. PyPI is a separate future decision. |
+| Is PyPI used now? | No. `v0.1.1` is installable from the public GitHub repo/tag. PyPI is a separate future decision. |
 | What is private? | Beads data, `.mba-work`, credentials, local AI-resource config, and dev instruction files stay out of the public repo. |
 
 ## Install MBA
@@ -39,7 +39,7 @@ flowchart LR
 Current public release:
 
 ```bash
-python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.0
+python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.1
 ```
 
 Developer install from a clone:
@@ -251,7 +251,7 @@ Details: [`docs/beads/capabilities.md`](docs/beads/capabilities.md).
 
 | Need | Command |
 |---|---|
-| Upgrade the MBA tool from GitHub | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.0` |
+| Upgrade the MBA tool from GitHub | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.1` |
 | Preview installed-content refresh | `mba upgrade --dry-run` |
 | Apply installed-content refresh | `mba upgrade` |
 | Preview removal | `mba remove --dry-run` |

@@ -1,4 +1,4 @@
-# MBA user guide — install, target-project use, status, upgrade, remove
+# MBA user guide — install, target-project use, adopt, status, upgrade, remove
 
 > Single-page operating manual. The normative requirements live in
 > [`mba/charter.md`](mba/charter.md); the Beads capability record lives in
@@ -10,13 +10,13 @@
 ## 1. Install MBA
 
 MBA's Python package name is **`multiple-beaded-agents`**. The current
-`v0.1.0` release is installable from the public GitHub tag; PyPI publishing
+`v0.1.1` release is installable from the public GitHub tag; PyPI publishing
 is a separate future decision. Runtime code is stdlib-only and supports
 Python 3.10+.
 
 | Install type | Command |
 |---|---|
-| Public `v0.1.0` release | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.0` |
+| Public `v0.1.1` release | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.1` |
 | Editable local clone | `python -m pip install -e .` |
 
 After install, four console scripts are available:
@@ -98,6 +98,40 @@ it to confirm what will land before committing to the write.
 
 The preflight gate runs **first** — `mba init` never reaches the write
 phase unless Beads is the validated version.
+
+## 2.5 Adopt a fresh clone of an MBA-managed repo — `mba adopt`
+
+A repository whose maintainer committed the `mba init` output tracks
+the managed content (the MBA RULES blocks, the copied docs, the
+skill), but the **private** `.mba/manifest.json` never travels with a
+clone — `.mba/` is local install state. On such a fresh clone
+`mba init` correctly refuses: the pre-existing files look user-owned
+and must not be overwritten. `mba adopt` is the fail-closed way in:
+
+```bash
+cd /path/to/fresh-clone
+mba adopt --dry-run     # preview the adoption verdict (writes nothing)
+mba adopt               # adopt; writes only .mba/manifest.json
+```
+
+| Rule | Behaviour |
+|---|---|
+| Verification | Every managed target already in the repo must be **raw byte-identical** to the packaged MBA content (block body between the MBA RULES markers; full content of verbatim copies). Raw means exactly that: **no newline normalization**. The packaged content is LF, so a CRLF checkout refuses with a reason naming the newline difference — keep managed content on `eol=lf` (this repo's `.gitattributes` shows the rule). |
+| Any mismatch | The **whole** adoption refuses (rc=7) with the offending paths listed — **no writes at all** (all-or-nothing). |
+| Stale state | `mba adopt` re-verifies every target from disk immediately before its first write. A file edited or created between planning and applying — by you, an editor, another process — refuses; nothing is ever recorded or overwritten from a stale verdict. A refusal that lands partway through the launch-file creations rolls back the files the command itself just created — deleting a path only when it is still the **very file the command created** (same filesystem object, verified without following symlinks) with the untouched packaged bytes. Anything you put at those paths instead, even a same-content file or symlink, is preserved and named in the refusal — your files are never deleted. A refusing `mba adopt` leaves the repository as it found it. |
+| What is written | Only `.mba/manifest.json` — plus the private OpenCode launch files when you explicitly select `--opencode create`. Verified tracked files are never touched. |
+| Absent OpenCode launch files (`opencode.json`, `.opencode/agents/*.md`) | `--opencode omit` (default) leaves them absent and out of the manifest; `--opencode create` writes them from the packaged bytes. A launch file that is already present is verified like every other target. |
+| Durable omission | An `omit` choice is recorded in the manifest and **survives `mba upgrade`**: the omitted targets stay absent instead of being re-installed. A file you later create yourself at an omitted path is user-owned — upgrade treats it as a conflict, never an overwrite. |
+| Idempotence | Re-running `mba adopt` on an adopted repo is a no-op (rc=0, `already_installed: true`). |
+| After adoption | `mba status` reports installed, no drift, no conflicts (rc=0). |
+| Existing `.mba/manifest.json` with drift | Refuses — adoption is not a repair path; use `mba status` / `mba upgrade`. |
+
+| Exit code | Meaning |
+|---|---|
+| `0` | Adopted (or already adopted — idempotent no-op). |
+| `4` | `--dry-run` and the adoption would succeed. |
+| `5` | `bd version` preflight refusal (nothing written). |
+| `7` | Mismatch or blocked — nothing written; the JSON names every mismatching path. |
 
 ## 3. Observe installed state — `mba status`
 
@@ -388,7 +422,7 @@ correct one.
 
 | You want to upgrade | Run |
 |---|---|
-| The **tool** (new MBA release from GitHub / future PyPI / a clone) | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.0` (or `python -m pip install -e . --upgrade` from a clone). |
+| The **tool** (new MBA release from GitHub / future PyPI / a clone) | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.1` (or `python -m pip install -e . --upgrade` from a clone). |
 | The **installed content** in a target repo (MBA RULES block / skill changed upstream) | `mba upgrade --dry-run` then `mba upgrade`. |
 
 ### Preview
@@ -439,7 +473,7 @@ upgrade above. The flow is intentionally explicit because of Charter
 
 | You want… | Run |
 |---|---|
-| Current public MBA release | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.0` |
+| Current public MBA release | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.1` |
 | A specific commit / branch / tag | `pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@<ref>` |
 | Then refresh a target repo's installed content | `mba upgrade --dry-run` (preview) → `mba upgrade` (apply) |
 

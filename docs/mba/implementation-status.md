@@ -1,13 +1,13 @@
 # MBA implementation status
 
-Snapshot for release `0.1.0`. Requirements live in [`charter.md`](charter.md).
+Snapshot for release `0.1.1`. Requirements live in [`charter.md`](charter.md).
 
 ## Built
 
 | Area | Status | Main code |
 |---|---|---|
 | Beads detection and version gate | Built | `mba_foundation.detect`, `preflight` |
-| Target-repo install/status/upgrade/remove | Built | `mba_foundation.cli`, `manifest` |
+| Target-repo install/adopt/status/upgrade/remove | Built | `mba_foundation.cli`, `manifest`, `adopt` |
 | `AGENTS.md` / `CLAUDE.md` marker blocks | Built | `mba_foundation.markers` |
 | OpenCode Orchestrator + worker install files | Built | `mba_foundation/resources/opencode/` |
 | Workspace mode and AI-resource privacy | Built | `mba_foundation.workspace` |
@@ -39,7 +39,7 @@ Snapshot for release `0.1.0`. Requirements live in [`charter.md`](charter.md).
 | Audit-trail rendering | Runtime-only audit-trail model exists. | Generate human-readable `sessions.md` / audit view. |
 | Hidden Orchestrator transcript capture | Supported when the harness owns it; MBA records MBA milestones and worker artefacts. | Optional host-specific capture helpers if useful. |
 | Advanced Beads features | Evaluated as Conditional. | Adopt only with a simpler validated use case and user approval. |
-| PyPI publishing | Not part of `0.1.0`. | Separate release decision and credentials. |
+| PyPI publishing | Not part of `0.1.1`. | Separate release decision and credentials. |
 
 ## Test slices used for release confidence
 
@@ -55,8 +55,8 @@ Snapshot for release `0.1.0`. Requirements live in [`charter.md`](charter.md).
 
 | Item | Status |
 |---|---|
-| Current version | `0.1.0` |
-| Public install source | GitHub tag `v0.1.0` |
+| Current version | `0.1.1` |
+| Public install source | GitHub tag `v0.1.1` |
 | PyPI | Not published. |
 | Dev Beads data | Private dev remote only. |
 | Public repo history | Rebuilt as a single public-safe commit for `v0.1.0`. |

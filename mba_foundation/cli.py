@@ -23,6 +23,14 @@ Subcommands:
                             (``mba_hgl.20``): preflight → manifest →
                             content install into ``AGENTS.md``,
                             ``CLAUDE.md``, and ``.agents/skills/mba/``.
+* ``adopt``               — fail-closed adoption of a repo that
+                            already tracks byte-identical managed
+                            content but has no private manifest
+                            (e.g. a fresh clone of an MBA-managed
+                            repo). Creates only ``.mba/manifest.json``
+                            plus any explicitly selected private
+                            OpenCode launch files; any mismatch
+                            refuses with no writes.
 * ``status``              — report installed MBA version + drift.
 * ``upgrade``             — preview / apply a refresh from current
                             MBA source. User-edited managed blocks
@@ -52,7 +60,7 @@ from pathlib import Path
 
 from mba_version import __version__
 
-from . import detect, manifest, markers, orchestrator, preflight, product_boundary, sync_guard, workspace
+from . import adopt, detect, manifest, markers, orchestrator, preflight, product_boundary, sync_guard, workspace
 
 
 def _emit(obj: dict) -> None:
@@ -547,6 +555,117 @@ def cmd_mba_init(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_mba_adopt(args: argparse.Namespace) -> int:
+    """``mba adopt`` — fail-closed adopt-existing for a fresh clone.
+
+    Order:
+      1. Resolve target ``--root`` (cwd default).
+      2. Run the ``bd version`` check **in memory**; refuse on
+         mismatch (rc=5). Unlike ``mba init`` no evidence file is
+         written — a successful adoption creates only the private
+         manifest and any explicitly selected private launch files,
+         and a refused adoption creates nothing at all.
+      3. Build the packaged upstream manifest (same surface as
+         ``mba init``).
+      4. Plan the adoption: every pre-existing managed target must be
+         **raw byte-identical** to the packaged content (no newline
+         normalization); absent OpenCode launch files follow the
+         explicit ``--opencode`` choice, and an ``omit`` choice is
+         recorded durably in the manifest.
+      5. ``--dry-run`` → print the plan only (rc=4; rc=7 when the
+         plan refuses).
+      6. Apply: :func:`mba_foundation.adopt.apply_adopt` re-verifies
+         every target from disk immediately before the first write,
+         then writes the selected launch files (OS-exclusive create)
+         and the manifest. All-or-nothing: any mismatch or post-plan
+         divergence refuses with rc=7 and zero net writes — a refusal
+         partway through the launch-file creations rolls the
+         already-created files back (guarded; a concurrently modified
+         file is preserved and named in the refusal). Exit 0 on
+         success and on the idempotent already-adopted no-op.
+    """
+
+    root = _resolve_root(args)
+
+    try:
+        raw = preflight.run_bd_version(cwd=root)
+    except FileNotFoundError as exc:
+        _emit(
+            {
+                "ok": False,
+                "reason": f"`bd` binary is unavailable: {exc}",
+                "bd_version": None,
+                "root": str(root),
+                "stage": "preflight",
+            }
+        )
+        return 5
+    bd_version = preflight.extract_bd_version(raw)
+    matches, reason = preflight.capability_conformance_check(bd_version)
+    if not matches:
+        _emit(
+            {
+                "ok": False,
+                "reason": reason,
+                "bd_version": bd_version,
+                "root": str(root),
+                "stage": "preflight",
+            }
+        )
+        return 5
+
+    managed_blocks, verbatim_copies = _default_install_targets()
+    upstream = manifest.build_manifest(
+        source=manifest.SOURCE_PACKAGED,
+        preflight_evidence=manifest.PreflightEvidence(
+            bd_version=bd_version,
+            matches_record=matches,
+            raw_output=raw,
+        ),
+        managed_block_targets=managed_blocks,
+        verbatim_copy_targets=verbatim_copies,
+    )
+
+    plan = adopt.plan_adopt(root, upstream, opencode=args.opencode)
+    payload: dict[str, object] = {
+        "root": str(root),
+        "upstream_version": upstream.mba_version,
+        "opencode": args.opencode,
+        "already_installed": plan.already_installed,
+        "blocking_reason": plan.blocking_reason,
+        "adopted_paths": list(plan.adopted_paths),
+        "created_paths": list(plan.created_paths),
+        "omitted_paths": list(plan.omitted_paths),
+        "mismatch_paths": list(plan.mismatch_paths),
+        "plan": adopt.adopt_plan_entries_to_rows(plan),
+    }
+
+    if args.dry_run:
+        payload["ok"] = plan.ok or plan.already_installed
+        payload["dry_run"] = True
+        _emit(payload)
+        return 4 if plan.ok or plan.already_installed else 7
+
+    try:
+        adopt.apply_adopt(
+            root, upstream, plan=plan, opencode=args.opencode, dry_run=False
+        )
+    except manifest.ManifestConflictError as exc:
+        payload["ok"] = False
+        payload["dry_run"] = False
+        payload["reason"] = str(exc)
+        payload["stage"] = "apply_adopt"
+        _emit(payload)
+        return 7
+
+    payload["ok"] = True
+    payload["dry_run"] = False
+    if not plan.already_installed:
+        payload["manifest_path"] = str(manifest.manifest_path(root))
+    _emit(payload)
+    return 0
+
+
 def cmd_mba_status(args: argparse.Namespace) -> int:
     """``mba status`` — report installed version + drift.
 
@@ -875,6 +994,37 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional Bead ID for the orchestrator working area (default: _setup).",
     )
     p.set_defaults(func=cmd_mba_init)
+
+    p = sub.add_parser(
+        "adopt",
+        help=(
+            "Adopt a repo that already tracks byte-identical MBA content "
+            "(writes only .mba/manifest.json plus explicitly selected "
+            "private OpenCode launch files; any mismatch refuses with no "
+            "writes)."
+        ),
+    )
+    p.add_argument(
+        "--root", default=".", help="Target repo root (default: cwd)."
+    )
+    p.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print the adoption plan without writing files.",
+    )
+    p.add_argument(
+        "--opencode",
+        default=adopt.OPENCODE_CHOICE_OMIT,
+        choices=list(adopt.OPENCODE_CHOICES),
+        help=(
+            "What to do with ABSENT private OpenCode launch files "
+            "(opencode.json, .opencode/agents/*.md): 'omit' (default) "
+            "leaves them out of the manifest; 'create' writes them from "
+            "the packaged bytes. Launch files already present are always "
+            "verified byte-identical and adopted."
+        ),
+    )
+    p.set_defaults(func=cmd_mba_adopt)
 
     p = sub.add_parser(
         "status",

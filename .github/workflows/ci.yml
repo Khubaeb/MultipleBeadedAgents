@@ -1,0 +1,74 @@
+# Cross-platform proof for the MBA package: full pytest suite (which
+# includes the `mba adopt` CLI end-to-end flow) on Windows, Linux, and
+# macOS against the validated Beads version (`bd 1.0.4`, per
+# docs/beads/capabilities.md — the exact release asset is downloaded
+# and checksum-verified; never a floating package channel).
+#
+# The `.gitattributes` rule (`* text=auto eol=lf`) keeps every checkout
+# LF on all three runners, which the raw byte-identity contract of
+# `mba adopt` relies on.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install bd (Beads) v1.0.4 — validated set, checksum-verified
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://github.com/gastownhall/beads/releases/download/v1.0.4"
+          case "$RUNNER_OS" in
+            Windows) asset="beads_1.0.4_windows_amd64.zip" ;;
+            Linux)   asset="beads_1.0.4_linux_amd64.tar.gz" ;;
+            macOS)
+              if [ "$(uname -m)" = "arm64" ]; then
+                asset="beads_1.0.4_darwin_arm64.tar.gz"
+              else
+                asset="beads_1.0.4_darwin_amd64.tar.gz"
+              fi
+              ;;
+            *) echo "unsupported runner OS: $RUNNER_OS" >&2; exit 1 ;;
+          esac
+          curl -fsSLO "$base/$asset"
+          curl -fsSLO "$base/checksums.txt"
+          if command -v sha256sum >/dev/null 2>&1; then
+            grep "$asset" checksums.txt | sha256sum -c -
+          else
+            grep "$asset" checksums.txt | shasum -a 256 -c -
+          fi
+          mkdir -p "$HOME/bd-bin"
+          case "$asset" in
+            *.zip) unzip -q "$asset" -d "$HOME/bd-bin" ;;
+            *)     tar -xzf "$asset" -C "$HOME/bd-bin" ;;
+          esac
+          echo "$HOME/bd-bin" >> "$GITHUB_PATH"
+
+      - name: Verify the validated bd version
+        shell: bash
+        run: |
+          bd version
+          bd version | grep -F "1.0.4"
+
+      - name: Install package + test runner
+        run: python -m pip install . pytest
+
+      - name: Run the full suite
+        run: python -m pytest -q

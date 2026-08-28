@@ -203,9 +203,6 @@ def install_or_initialize(
 
     nested = check_nested_init(cwd)
     if nested.blocked:
-        proc = subprocess.run(
-            ["cmd", "/c", "echo"], capture_output=True, text=True, check=False
-        )
         return subprocess.CompletedProcess(
             args=[bd_binary, "init"],
             returncode=1,
