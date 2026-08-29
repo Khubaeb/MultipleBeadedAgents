@@ -59,13 +59,34 @@ jobs:
             *.zip) unzip -q "$asset" -d "$HOME/bd-bin" ;;
             *)     tar -xzf "$asset" -C "$HOME/bd-bin" ;;
           esac
-          echo "$HOME/bd-bin" >> "$GITHUB_PATH"
+          # GITHUB_PATH entries are consumed by NATIVE processes in the
+          # later steps (pwsh, python, and every subprocess the test
+          # suite spawns). Git Bash's "$HOME" on Windows is a POSIX-style
+          # path (/c/Users/...), which native Windows processes cannot
+          # resolve — export the native form (C:\Users\...) instead.
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            cygpath -w "$HOME/bd-bin" >> "$GITHUB_PATH"
+          else
+            echo "$HOME/bd-bin" >> "$GITHUB_PATH"
+          fi
 
       - name: Verify the validated bd version
         shell: bash
         run: |
           bd version
           bd version | grep -F "1.0.4"
+
+      # No `shell:` override — this runs under each OS's default native
+      # shell (pwsh on Windows), resolving `bd` exactly the way the test
+      # suite's Python subprocesses do. A POSIX-only PATH entry that Git
+      # Bash would silently tolerate fails here instead of in the suite.
+      - name: Verify bd is discoverable by native processes
+        run: >
+          python -c "import shutil, subprocess;
+          path = shutil.which('bd');
+          assert path, 'bd is not discoverable on the native PATH';
+          print('bd resolved at', path);
+          subprocess.run(['bd', 'version'], check=True)"
 
       - name: Install package + test runner
         run: python -m pip install . pytest
