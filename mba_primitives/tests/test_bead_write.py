@@ -27,6 +27,8 @@ def test_safe_write_field_text_writes_temp_file(monkeypatch, tmp_path: Path) -> 
     captured: dict = {}
 
     def fake_run(argv, *args, **kwargs):  # type: ignore[no-untyped-def]
+        if argv[1:] == ["version"]:
+            return _FakeProc(stdout="bd version 1.0.4")
         captured["argv"] = argv
         captured["cwd"] = kwargs.get("cwd")
         return _FakeProc(returncode=0, stdout="ok")
@@ -60,6 +62,8 @@ def test_safe_write_field_design_uses_design_file(monkeypatch, tmp_path: Path) -
     captured: dict = {}
 
     def fake_run(argv, *args, **kwargs):  # type: ignore[no-untyped-def]
+        if argv[1:] == ["version"]:
+            return _FakeProc(stdout="bd version 1.0.4")
         captured["argv"] = argv
         return _FakeProc()
 
@@ -80,6 +84,8 @@ def test_safe_write_field_notes_uses_argv_transport(monkeypatch, tmp_path: Path)
     captured: dict = {}
 
     def fake_run(argv, *args, **kwargs):  # type: ignore[no-untyped-def]
+        if argv[1:] == ["version"]:
+            return _FakeProc(stdout="bd version 1.0.4")
         captured["argv"] = argv
         captured["cwd"] = kwargs.get("cwd")
         captured["shell"] = kwargs.get("shell", False)
@@ -103,6 +109,8 @@ def test_safe_write_field_acceptance_uses_argv_transport(monkeypatch, tmp_path: 
     captured: dict = {}
 
     def fake_run(argv, *args, **kwargs):  # type: ignore[no-untyped-def]
+        if argv[1:] == ["version"]:
+            return _FakeProc(stdout="bd version 1.0.4")
         captured["argv"] = argv
         return _FakeProc()
 
@@ -123,6 +131,8 @@ def test_safe_write_field_labels_repeat_flag(monkeypatch, tmp_path: Path) -> Non
     captured: dict = {}
 
     def fake_run(argv, *args, **kwargs):  # type: ignore[no-untyped-def]
+        if argv[1:] == ["version"]:
+            return _FakeProc(stdout="bd version 1.0.4")
         captured["argv"] = argv
         return _FakeProc()
 
@@ -149,6 +159,8 @@ def test_safe_write_field_labels_accept_string(monkeypatch, tmp_path: Path) -> N
     captured: dict = {}
 
     def fake_run(argv, *args, **kwargs):  # type: ignore[no-untyped-def]
+        if argv[1:] == ["version"]:
+            return _FakeProc(stdout="bd version 1.0.4")
         captured["argv"] = argv
         return _FakeProc()
 

@@ -143,6 +143,9 @@ def test_install_invokes_bd_when_authority_granted(
         stderr = ""
 
     def fake_run(cmd, *args, **kwargs):  # type: ignore[no-untyped-def]
+        if cmd[1:] == ["version"]:
+            from subprocess import CompletedProcess
+            return CompletedProcess(cmd, 0, "bd version 1.0.4", "")
         calls.append(list(cmd))
         return _Fake()
 

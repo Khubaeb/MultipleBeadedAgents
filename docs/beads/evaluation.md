@@ -7,7 +7,7 @@
 
 | Area | Decision |
 |---|---|
-| Foundation version | `bd 1.0.4` is the validated foundation set. |
+| Foundation version | Exact releases `bd 1.0.4` and `bd 1.3.0` form the validated foundation set; other versions are refused. |
 | Advanced-feature reference | Beads `v1.1.0` advanced workflow features were studied as optional future tools. |
 | Evidence rule | Use official docs/source plus disposable-repo tests; do not infer behavior from intent. |
 | Public boundary | Detailed private worker transcripts stay out of the public repo. This file carries the reusable conclusions only. |

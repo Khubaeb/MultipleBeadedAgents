@@ -195,6 +195,29 @@ def call(
     in the inherited PATH — never ``<evil.py>``.
     """
 
+    # Every runtime write surface (including direct setup/handoff calls)
+    # checks the actual selected executable. Reads remain available for recovery.
+    command_args = list(args)
+    while command_args and command_args[0].startswith("--actor"):
+        flag = command_args.pop(0)
+        if "=" not in flag and command_args:
+            command_args.pop(0)
+    command = command_args[0] if command_args else ""
+    writes = command in {"create", "update", "close", "reopen", "init", "remember"}
+    writes |= command == "comments" and command_args[1:2] == ["add"]
+    writes |= command == "dep" and command_args[1:2] in (["add"], ["remove"])
+    if writes:
+        from mba_foundation.preflight import extract_bd_version, capability_conformance_check
+        version = call(bd_binary, args=["version"], cwd=cwd, env=env)
+        supported, reason = capability_conformance_check(extract_bd_version(version.stdout))
+        if version.returncode or not supported:
+            refusal = subprocess.CompletedProcess(
+                [bd_binary, *args], 1, "", "Beads write refused: " + (reason or version.stderr)
+            )
+            if check:
+                refusal.check_returncode()
+            return refusal
+
     override = _INVOKER_OVERRIDE
     if override is not None:
         argv = [sys.executable, str(override), *args]

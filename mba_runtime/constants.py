@@ -145,7 +145,7 @@ COMMENT_TARGET_LINES: tuple[int, ...] = tuple(range(COMMENT_MIN_LINES, COMMENT_M
 # differs from this set; the refusal is part of the audit-grade contract.
 # ---------------------------------------------------------------------------
 
-VALIDATED_BD_VERSIONS: frozenset[str] = frozenset({"1.0.4"})
+from mba_foundation.constants import VALIDATED_BD_VERSIONS
 
 
 def mba_work_root(cwd: Path) -> Path:

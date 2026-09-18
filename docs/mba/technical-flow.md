@@ -13,7 +13,7 @@
 | `mba_runtime` | The `drive_bead` orchestration shell + supporting services | `lifecycle`, `pattern_router`, `convergence`, `comments`, `external_dispatch`, `user_authority`, `graph`, `ai_resources`, `session_recovery`, `cli` |
 
 Every layer records `bd version` and gates writes on the validated set
-(`1.0.4`) before touching Beads (Foundation AC #1/#2).
+(exact releases `1.0.4` and `1.3.0`) before touching Beads (Foundation AC #1/#2).
 
 ## Target-repo upgrade and managed-file retirement
 

@@ -169,3 +169,22 @@ def assert_outside_repository():
         )
 
     return _assert
+
+
+@pytest.fixture(autouse=True)
+def isolated_bd_environment(monkeypatch, tmp_path_factory):
+    """Keep test subprocesses away from user/global Beads and Git configuration."""
+    for key in list(os.environ):
+        if key.startswith(("BEADS_", "BD_", "DOLT_", "GIT_")):
+            monkeypatch.delenv(key, raising=False)
+    home = tmp_path_factory.mktemp("isolated-home")
+    for key, value in {
+        "HOME": str(home), "USERPROFILE": str(home),
+        "XDG_CONFIG_HOME": str(home / "config"),
+        "GIT_CONFIG_GLOBAL": os.devnull, "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_AUTHOR_NAME": "MBA fixture", "GIT_AUTHOR_EMAIL": "fixture@example.invalid",
+        "GIT_COMMITTER_NAME": "MBA fixture", "GIT_COMMITTER_EMAIL": "fixture@example.invalid",
+        "TZ": "UTC", "DO_NOT_TRACK": "1", "BD_SMART_GATE": "0",
+        "BD_BACKUP_ENABLED": "false", "BD_NO_AUTO_EXPORT": "1",
+    }.items():
+        monkeypatch.setenv(key, value)

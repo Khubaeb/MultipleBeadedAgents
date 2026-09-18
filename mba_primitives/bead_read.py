@@ -99,6 +99,7 @@ def read_back(
     proc = subprocess.run(
         [bd_binary, "show", bead_id, "--json"],
         capture_output=True,
+        encoding="utf-8",
         text=True,
         check=False,
         cwd=str(cwd) if cwd is not None else None,

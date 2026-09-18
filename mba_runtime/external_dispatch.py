@@ -114,6 +114,7 @@ from __future__ import annotations
 import datetime as _dt
 import os
 import subprocess
+from functools import partial
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, Optional
@@ -433,21 +434,42 @@ def _default_process_kill(pid: int) -> None:
         raise
 
 
-def _default_record_blocked(bead_id: str, comment_text: str) -> None:
-    """Default refusal sink: the Bead handoff path.
+def _default_record_blocked(
+    bead_id: str,
+    reason: str,
+    *,
+    cwd: Path | None = None,
+    bd_binary: str = "bd",
+) -> None:
+    """Persist a structured cleanup refusal on the selected project board."""
 
-    The default delegates to ``raise_human_needed`` so the refusal
-    produces the structured comment + status / assignee / label
-    write the rest of the runtime expects. The Orchestrator can
-    inject a no-op replacement in tests.
-    """
-
-    raise_human_needed(
-        cwd=Path.cwd(),
+    project = (cwd if cwd is not None else Path.cwd()).resolve()
+    comment_path = assert_path_inside(
+        project,
+        project / ".mba-work" / bead_id / "orchestrator" / "cleanup-handoff.md",
+        label="cleanup handoff",
+    )
+    text = render_human_handoff_comment(
+        decision_needed="Resolve the worker cleanup refusal before this round continues.",
+        options=("verify the launch receipt", "stop the protected worker manually"),
+        recommendation="keep the Bead blocked until ownership and cleanup are resolved",
+        detail=" ".join(reason.split()),
+    )
+    handoff = raise_human_needed(
+        cwd=project,
         bead_id=bead_id,
         actor="Orchestrator",
-        comment_text=comment_text,
+        comment_text=text,
+        comment_path=comment_path,
+        bd_binary=bd_binary,
     )
+    if handoff.comment_returncode or handoff.update_returncode:
+        raise WorkerCleanupError(
+            "cleanup Human handoff failed: "
+            f"comment exit={handoff.comment_returncode}, "
+            f"update exit={handoff.update_returncode}; "
+            f"local comment: {comment_path}"
+        )
 
 
 def cleanup_mba_owned_worker(
@@ -456,6 +478,8 @@ def cleanup_mba_owned_worker(
     is_alive: Callable[[int], bool] | None = None,
     kill: Callable[[int], None] | None = None,
     record_blocked: Callable[[str, str], None] | None = None,
+    cwd: Path | None = None,
+    bd_binary: str = "bd",
     orchestrator_session_id: str | None = None,
     orchestrator_transcript_id: str | None = None,
 ) -> CleanupOutcome:
@@ -487,11 +511,15 @@ def cleanup_mba_owned_worker(
     ``is_alive`` / ``kill`` / ``record_blocked`` are injectable so
     tests can verify the gate logic without spawning or killing
     a real process. The defaults are the OS-level helpers above.
+    ``cwd`` and ``bd_binary`` bind the default handoff to the project;
+    standalone callers default to the current directory and ``bd``.
     """
 
     is_alive_fn = is_alive or _default_process_is_alive
     kill_fn = kill or _default_process_kill
-    blocked_fn = record_blocked or _default_record_blocked
+    blocked_fn = record_blocked if record_blocked is not None else partial(
+        _default_record_blocked, cwd=cwd, bd_binary=bd_binary
+    )
 
     # Non-MBA gate: a foreign / user session is never touched.
     # The runtime owns the launch record's ``owner`` field; a
@@ -665,6 +693,8 @@ def cleanup_worker_or_record_block(
     is_alive: Callable[[int], bool] | None = None,
     kill: Callable[[int], None] | None = None,
     record_blocked: Callable[[str, str], None] | None = None,
+    cwd: Path | None = None,
+    bd_binary: str = "bd",
     orchestrator_session_id: str | None = None,
     orchestrator_transcript_id: str | None = None,
 ) -> CleanupOutcome:
@@ -681,6 +711,8 @@ def cleanup_worker_or_record_block(
         is_alive=is_alive,
         kill=kill,
         record_blocked=record_blocked,
+        cwd=cwd,
+        bd_binary=bd_binary,
         orchestrator_session_id=orchestrator_session_id,
         orchestrator_transcript_id=orchestrator_transcript_id,
     )
@@ -793,6 +825,7 @@ class ExternalProcessSessionRunner:
     # worker that is still alive.
     cleanup_on_terminal_state: bool = True
 
+    bd_binary: str = "bd"
     posts_own_comment: bool = True
 
     def _build_mba_owned_worker(
@@ -868,6 +901,8 @@ class ExternalProcessSessionRunner:
             is_alive=self.cleanup_is_alive,
             kill=self.cleanup_kill,
             record_blocked=self.cleanup_record_blocked,
+            cwd=self.authority.project_cwd,
+            bd_binary=self.bd_binary,
             orchestrator_session_id=self.cleanup_orchestrator_session_id,
             orchestrator_transcript_id=self.cleanup_orchestrator_transcript_id,
         )
@@ -940,6 +975,7 @@ class ExternalProcessSessionRunner:
             actor="Orchestrator",
             comment_text=comment_text,
             comment_path=comment_path,
+            bd_binary=self.bd_binary,
         )
 
     def __call__(self, brief) -> object:  # type: ignore[no-untyped-def]
@@ -1256,7 +1292,7 @@ class ExternalProcessSessionRunner:
         # tells ``drive_bead`` to skip its own posting for this
         # session).
         bd_client.call(
-            "bd",
+            self.bd_binary,
             args=[
                 "comments",
                 "add",

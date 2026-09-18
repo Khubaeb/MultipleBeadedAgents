@@ -58,6 +58,10 @@ include-package-data = true
 [tool.setuptools.dynamic]
 version = { attr = "mba_version.__version__" }
 
+# Keep the reproducible test suite in sdists without expanding runtime wheels.
+[tool.setuptools.exclude-package-data]
+"*" = ["tests/*.py", "tools/*.py"]
+
 [tool.setuptools.package-data]
 mba_foundation = [
     "README.md",

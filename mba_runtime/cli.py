@@ -108,6 +108,7 @@ def cmd_drive_bead(args: argparse.Namespace) -> int:
 
         runner = external_dispatch.ExternalProcessSessionRunner(
             dispatch_argv=(sys.executable, str(script)),
+            bd_binary=args.bd,
             authority=authority,
             timeout_seconds=float(args.dispatch_timeout_seconds),
         )

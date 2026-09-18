@@ -31,6 +31,11 @@ recursive-include mba_primitives *.md
 include mba_version.py
 include conftest.py
 include pytest.ini
+recursive-include tests *.py
+recursive-include mba_foundation/tests *.py
+recursive-include mba_primitives/tests *.py
+recursive-include mba_runtime/tests *.py
+recursive-include mba_foundation/tools *.py
 
 global-exclude __pycache__
 global-exclude *.py[cod]

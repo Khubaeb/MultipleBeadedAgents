@@ -45,7 +45,7 @@ def test_preflight_runs_against_disposable_repo(tmp_path: Path) -> None:
         cwd=repo,
     )
     assert result.ok is True
-    assert result.bd_version == "1.0.4"
+    assert result.bd_version in result.validated_versions
     assert (orch_dir / "working.md").exists()
 
 

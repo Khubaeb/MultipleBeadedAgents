@@ -41,6 +41,7 @@ def cmd_safe_write(args: argparse.Namespace) -> int:
         # For label fields the content arrives as repeated ``--label``
         # argv; for text fields we read the file at ``--content-file``.
         _resolve_content(args),
+        actor=args.actor,
         cwd=Path(args.cwd).resolve() if args.cwd else None,
         bd_binary=args.bd,
     )
@@ -158,6 +159,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     p = sub.add_parser("safe-write", help="Multiline-safe Bead-field writer.")
+    p.add_argument("--actor", required=True, help="Actual worker role/identity for the audit trail")
     p.add_argument("--bead-id", required=True)
     p.add_argument(
         "--field",

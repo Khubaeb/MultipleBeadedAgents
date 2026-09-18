@@ -10,10 +10,11 @@ from __future__ import annotations
 import re
 import sys
 
-# Validated by `bd 1.0.4` foundation research; widening support to a later
+# Validated by foundation research and tests/test_beads_compatibility.py;
+# widening support to a later
 # version requires the revalidation workflow in
 # ``docs/beads/capabilities.md`` Version policy.
-VALIDATED_BD_VERSIONS: frozenset[str] = frozenset({"1.0.4"})
+VALIDATED_BD_VERSIONS: frozenset[str] = frozenset({"1.0.4", "1.3.0"})
 
 # Verbatim MBA-owned marker pair installed into ``AGENTS.md`` and
 # ``CLAUDE.md`` from ``mba_foundation.markers.MBA_RULES_BLOCK``.
@@ -47,4 +48,4 @@ AI_RESOURCE_RECORD: str = ".mba-work/.ai-resources.json"
 # Marker used in `bd version` output. The Beads 1.0.4 binary prints
 # ``bd version 1.0.4 (ce242a879: HEAD@ce242a879678)``; we extract the
 # leading semver-like token.
-BD_VERSION_PATTERN: re.Pattern[str] = re.compile(r"\b(\d+\.\d+\.\d+)\b")
+BD_VERSION_PATTERN: re.Pattern[str] = re.compile(r"\b(\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?)\b")
