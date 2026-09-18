@@ -179,6 +179,70 @@ def test_safe_write_field_labels_accept_string(monkeypatch, tmp_path: Path) -> N
     assert argv.count("gamma") == 1
 
 
+@pytest.mark.parametrize("version", ["1.0.4", "1.3.0"])
+@pytest.mark.parametrize("label_count", [1, 3, 20])
+def test_labels_probe_once_per_call(monkeypatch, tmp_path, version, label_count):
+    calls = []
+    binary = str(tmp_path / "selected-bd")
+    env = {"HOME": str(tmp_path)}
+    labels = [f"label-{i}" for i in range(label_count)]
+    update = [binary, "update", "bead-x"]
+    for label in labels:
+        update.extend(["--set-labels", label])
+    update.extend(["--actor", "Engineer"])
+
+    def fake_run(argv, **kwargs):
+        calls.append(argv)
+        assert kwargs["cwd"] == str(tmp_path)
+        assert kwargs["env"] is env
+        assert kwargs.get("shell", False) is False
+        return _FakeProc(stdout=f"bd version {version}")
+
+    monkeypatch.setattr(bead_write.subprocess, "run", fake_run)
+    for _ in range(2):
+        assert bead_write.safe_write_field(
+            "bead-x", "labels", labels, cwd=tmp_path,
+            bd_binary=binary, env=env, actor="Engineer",
+        ).returncode == 0
+    # Each logical write probes afresh; labels do not multiply probes.
+    assert calls == [[binary, "version"], update] * 2
+
+
+@pytest.mark.parametrize("probe", [
+    _FakeProc(stdout="bd version 9.9.9"),
+    _FakeProc(stdout="bd version 1.3.0-rc.1"),
+    _FakeProc(stdout="unparseable"),
+    _FakeProc(returncode=2, stdout="bd version 1.3.0", stderr="probe failed"),
+])
+def test_labels_failed_gate_never_mutates(monkeypatch, probe):
+    calls = []
+
+    def fake_run(argv, **kwargs):
+        calls.append(argv)
+        return probe
+
+    monkeypatch.setattr(bead_write.subprocess, "run", fake_run)
+    result = bead_write.safe_write_field(
+        "bead-x", "labels", ["alpha", "beta"], bd_binary="selected-bd",
+    )
+    assert result.returncode != 0
+    assert "Beads write refused" in result.stderr
+    assert calls == [["selected-bd", "version"]]
+
+
+def test_labels_update_failure_is_returned_without_retry(monkeypatch):
+    calls = []
+    failure = _FakeProc(returncode=7, stdout="partial output", stderr="write failed")
+
+    def fake_run(argv, **kwargs):
+        calls.append(argv)
+        return _FakeProc(stdout="bd version 1.3.0") if argv[1:] == ["version"] else failure
+
+    monkeypatch.setattr(bead_write.subprocess, "run", fake_run)
+    assert bead_write.safe_write_field("bead-x", "labels", ["a", "b"]) is failure
+    assert len(calls) == 2
+
+
 def test_safe_write_field_labels_refuses_empty(monkeypatch, tmp_path: Path) -> None:
     called = {"n": 0}
 

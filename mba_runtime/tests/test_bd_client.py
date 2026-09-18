@@ -96,14 +96,8 @@ def test_ambient_env_var_alone_does_not_activate_stub(
         "hardening is broken"
     )
 
-    bd_binary_path = tmp_path / "fake_bd_binary.py"
-    bd_binary_path.write_text(
-        "import sys\n"
-        "sys.stdout.write('BINARY_INVOKED\\n')\n"
-        "sys.exit(0)\n",
-        encoding="utf-8",
-    )
-    proc = bd_client.call(sys.executable, args=[str(bd_binary_path)])
+    proc = bd_client.call(sys.executable, args=["--version"])
+    assert proc.returncode == 0 and "Python" in proc.stdout
     assert "STUB_INVOKED" not in proc.stdout, (
         "the ambient env var activated the stub; round-2 "
         "hardening is broken"
@@ -142,12 +136,8 @@ def test_both_env_vars_set_does_not_activate_stub(
     # ``bd_binary`` must not invoke the stub. Use a portable
     # interpreter invocation so the test is meaningful on any
     # host; the stub's marker file must not be created.
-    proc = bd_client.call(
-        sys.executable, args=[str(tmp_path / "present_binary.py")]
-    )
-    # The configured ``bd_binary`` (sys.executable + .py) is a
-    # non-zero exit because the file doesn't exist; what
-    # matters is that the stub was never invoked.
+    proc = bd_client.call(sys.executable, args=["--version"])
+    assert proc.returncode == 0 and "Python" in proc.stdout
     assert "STUB_INVOKED" not in proc.stdout, (
         "the round-2 ambient env attack succeeded; the stub ran "
         "despite no in-process override"
@@ -271,3 +261,124 @@ def test_override_persists_to_subprocess_via_path_wrapper(tmp_path: Path) -> Non
         f"through the stub; stdout={proc.stdout!r} "
         f"stderr={proc.stderr!r}"
     )
+
+
+@pytest.mark.parametrize("args", [
+    ["future-write", "mba-1"],
+    ["comments", "future-write", "mba-1"],
+    ["dep", "future-write", "mba-1"],
+    ["--json", "update", "mba-1", "--status", "closed"],
+    ["--actor=Doer", "future-write"],
+    ["--actor", "Doer", "future-write"],
+])
+def test_unknown_commands_cannot_bypass_version_check(monkeypatch, args):
+    calls = []
+
+    def run(argv, **kwargs):
+        calls.append(argv)
+        return subprocess.CompletedProcess(argv, 0, "bd version 9.9.9\n", "")
+
+    monkeypatch.setattr(subprocess, "run", run)
+    result = bd_client.call("bd", args=args)
+    assert result.returncode == 1
+    assert "Beads write refused" in result.stderr
+    assert calls == [["bd", "version"]]
+
+
+@pytest.mark.parametrize("version", ["1.0.4", "1.3.0", "1.0.5", "1.3.1", "1.3.0-rc.1", "1.3.0+build", "garbage"])
+@pytest.mark.parametrize("args", [
+    ["create", "--title", "test", "--actor", "Doer"],
+    ["--actor", "Doer", "update", "mba-1", "--status", "blocked"],
+    ["--actor=Doer", "close", "mba-1"],
+    ["reopen", "mba-1"], ["init"], ["remember", "note"],
+    ["comments", "add", "mba-1", "-f", "comment.md"],
+    ["dep", "add", "mba-1", "mba-2"],
+    ["dep", "remove", "mba-1", "mba-2"],
+    ["future-write", "--actor", "Doer"],
+    ["--json", "update", "mba-1"],
+    ["--actor-like", "show", "mba-1"],
+])
+def test_exact_version_gate_preserves_argv_and_context(monkeypatch, tmp_path, version, args):
+    calls = []
+    env = {"PATH": str(tmp_path)}
+
+    def run(argv, **kwargs):
+        calls.append((argv, kwargs))
+        if argv == ["configured-bd", "version"]:
+            return subprocess.CompletedProcess(argv, 0, f"bd version {version}\n", "")
+        return subprocess.CompletedProcess(argv, 0, "command result", "")
+
+    monkeypatch.setattr(subprocess, "run", run)
+    original_args = list(args)
+    result = bd_client.call("configured-bd", args=args, cwd=tmp_path, env=env)
+    supported = version in {"1.0.4", "1.3.0"}
+    assert result.returncode == (0 if supported else 1)
+    assert [argv for argv, _ in calls] == (
+        [["configured-bd", "version"], ["configured-bd", *args]]
+        if supported else [["configured-bd", "version"]]
+    )
+    assert args == original_args
+    for _, kwargs in calls:
+        assert kwargs["cwd"] == str(tmp_path)
+        assert kwargs["env"] is env
+        assert kwargs["executable"] == "configured-bd"
+    if supported:
+        assert result.stdout == "command result"
+
+
+@pytest.mark.parametrize("args", [
+    [], ["--help"], ["-h"], ["--version"], ["version"],
+    ["show", "mba-1", "--json"], ["list", "--status=open"],
+    ["ready"], ["blocked"], ["search", "needle"],
+    ["dep", "list", "mba-1"], ["dep", "cycles"],
+    ["--actor", "Doer", "show", "mba-1"],
+    ["--actor=Doer", "dep", "list", "mba-1"],
+    ["show", "mba-1", "--actor", "Doer"],
+])
+def test_recovery_reads_do_not_require_supported_version(monkeypatch, args):
+    calls = []
+
+    def run(argv, **kwargs):
+        calls.append(argv)
+        return subprocess.CompletedProcess(argv, 0, "read output", "")
+
+    monkeypatch.setattr(subprocess, "run", run)
+    result = bd_client.call("bd", args=args)
+    assert calls == [["bd", *args]]
+    assert result.stdout == "read output"
+
+
+@pytest.mark.parametrize("check", [False, True])
+def test_failed_version_probe_refuses_even_supported_stdout(monkeypatch, check):
+    calls = []
+
+    def run(argv, **kwargs):
+        calls.append(argv)
+        return subprocess.CompletedProcess(argv, 2, "bd version 1.3.0", "probe failed")
+
+    monkeypatch.setattr(subprocess, "run", run)
+    if check:
+        with pytest.raises(subprocess.CalledProcessError) as exc:
+            bd_client.call("bd", args=["future-write"], check=True)
+        assert exc.value.cmd == ["bd", "future-write"]
+        assert "probe failed" in exc.value.stderr
+    else:
+        result = bd_client.call("bd", args=["future-write"])
+        assert result.returncode == 1
+        assert "probe failed" in result.stderr
+    assert calls == [["bd", "version"]]
+
+
+def test_override_is_version_checked_before_unknown_command(tmp_path):
+    stub = tmp_path / "versioned_stub.py"
+    marker = tmp_path / "invocations"
+    stub.write_text(
+        "import pathlib, sys\n"
+        f"with pathlib.Path({str(marker)!r}).open('a') as log:\n"
+        "    log.write(repr(sys.argv[1:]) + '\\n')\n"
+        "print('bd version 9.9.9')\n", encoding="utf-8",
+    )
+    bd_client.set_subprocess_invoker_override(stub)
+    result = bd_client.call("nonexistent-bd", args=["future-write"])
+    assert result.returncode == 1
+    assert marker.read_text() == "['version']\n"

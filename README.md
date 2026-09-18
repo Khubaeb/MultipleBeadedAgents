@@ -1,8 +1,9 @@
 # Multiple Beaded Agents (MBA)
 
-> MBA **0.1.2** supports exact Beads releases **1.0.4 and 1.3.0**.
-> MBA **0.1.1** supported **1.0.4 only**. The commands below target the
-> `v0.1.2` Git tag and require that tag to be published.
+> MBA **0.1.3** supports exact Beads releases **1.0.4 and 1.3.0**.
+> The completed **0.1.2** release introduced support for both versions;
+> **0.1.1** supported **1.0.4 only**. The commands below target `v0.1.3`
+> and require publication of that tag. This source prepares that release.
 
 MBA is a copy-and-use workflow that lets one or more AI sessions work as a
 small project team on top of [Beads](https://github.com/gastownhall/beads).
@@ -40,10 +41,10 @@ flowchart LR
 
 ## Install MBA
 
-Install version 0.1.2 from its published Git tag:
+After the `v0.1.3` tag is published, install version 0.1.3:
 
 ```bash
-python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.2
+python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.3
 ```
 
 Developer install from a clone:
@@ -255,7 +256,7 @@ Details: [`docs/beads/capabilities.md`](docs/beads/capabilities.md).
 
 | Need | Command |
 |---|---|
-| Upgrade the MBA tool from GitHub | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.2` |
+| Upgrade the MBA tool from GitHub | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.3` |
 | Preview installed-content refresh | `mba upgrade --dry-run` |
 | Apply installed-content refresh | `mba upgrade` |
 | Preview removal | `mba remove --dry-run` |
