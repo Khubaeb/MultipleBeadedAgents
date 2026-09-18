@@ -67,7 +67,7 @@ python -m mba_runtime first-contact --cwd . --apply-setup
 
 | Capability | Status |
 |---|---|
-| Beads preflight/version gate (`bd 1.0.4`) | Built |
+| Beads preflight/version gate (exact `bd 1.0.4` and `bd 1.3.0`) | Built |
 | `mba init`, `mba adopt`, `mba status`, `mba upgrade`, `mba remove` | Built |
 | Marker-managed `AGENTS.md` / `CLAUDE.md` blocks | Built |
 | OpenCode Orchestrator + worker install files | Built |
@@ -102,7 +102,7 @@ python -m mba_runtime first-contact --cwd . --apply-setup
 
 | Item | Value |
 |---|---|
-| Current release | `0.1.1` |
-| Install source | GitHub tag `v0.1.1` |
+| Source version | `0.1.2` |
+| Install target | GitHub tag `v0.1.2`, after publication |
 | Package name | `multiple-beaded-agents` |
 | PyPI | Not published yet. |

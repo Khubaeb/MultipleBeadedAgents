@@ -33,6 +33,7 @@ orchestration shell that knows about the records the user can inspect.
 from __future__ import annotations
 
 import json
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
@@ -235,7 +236,8 @@ def load_final_dir(cwd: Path, bead_id: str) -> Path:
     return cwd / MBA_WORK_DIR / bead_id / FINAL_DIR
 
 
-def record_bd_version(cwd: Path, bead_id: str, *, source: str) -> Path:
+def record_bd_version(cwd: Path, bead_id: str, *, source: str,
+                      bd_binary: str = "bd", capture: subprocess.CompletedProcess[str] | None = None) -> Path:
     """Append a ``bd version`` capture to the orchestrator's working log.
 
     The runtime never issues a ``bd`` write without this capture
@@ -257,7 +259,7 @@ def record_bd_version(cwd: Path, bead_id: str, *, source: str) -> Path:
     orch_dir.mkdir(parents=True, exist_ok=True)
     target = orch_dir / "bd-version.log"
     target.parent.mkdir(parents=True, exist_ok=True)
-    proc = bd_client.call("bd", args=["version"], cwd=cwd)
+    proc = capture if capture is not None else bd_client.call(bd_binary, args=["version"], cwd=cwd)
     payload = {
         "source": source,
         "returncode": proc.returncode,
@@ -509,15 +511,14 @@ def _bd_version_gate(cwd: Path, *, bead_id: str, bd_binary: str) -> str:
             f"the runtime refuses to issue writes without a working "
             f"`bd` binary"
         )
-    import re
+    from mba_foundation.preflight import extract_bd_version
 
-    match = re.search(r"\b(\d+\.\d+\.\d+)\b", raw)
-    if not match:
+    version = extract_bd_version(raw)
+    if not version:
         raise LifecycleError(
             f"`{bd_binary} version` output did not contain a semver "
             f"token; raw={raw!r}"
         )
-    version = match.group(1)
     if version not in VALIDATED_BD_VERSIONS:
         raise LifecycleError(
             f"`bd` version {version!r} is not in the validated set "
@@ -533,6 +534,7 @@ def _bd_version_gate(cwd: Path, *, bead_id: str, bd_binary: str) -> str:
         cwd,
         bead_id,
         source="lifecycle._bd_version_gate",
+        bd_binary=bd_binary, capture=proc,
     )
     return version
 
@@ -617,7 +619,7 @@ def _close_bead(
     """
 
     proc = bd_client.call(
-        bd_binary, args=["close", bead_id, "--reason", reason], cwd=cwd
+        bd_binary, args=["close", bead_id, "--reason", reason, "--actor", "Orchestrator"], cwd=cwd
     )
     return proc.returncode == 0
 

@@ -241,7 +241,7 @@ MBA_RULES_BLOCK: str = """{begin}
 - Run ``bd version`` at the start of every MBA run; record the value
   in ``.mba-work/<bead>/orchestrator/working.md``; gate every
   subsequent Bead write on the recorded version.
-- The capability record's validated set is ``bd 1.0.4``. Refuse to
+- The capability record's validated set is ``bd 1.0.4`` and ``bd 1.3.0``. Refuse to
   proceed on mismatch; never silently upgrade ``bd`` per
   ``docs/beads/capabilities.md`` Version policy.
 

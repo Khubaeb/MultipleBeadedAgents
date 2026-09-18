@@ -1,5 +1,9 @@
 # MBA user guide — install, target-project use, adopt, status, upgrade, remove
 
+> MBA **0.1.2** supports exact Beads releases **1.0.4 and 1.3.0**.
+> MBA **0.1.1** supported **1.0.4 only**. The commands below target the
+> `v0.1.2` Git tag and require that tag to be published.
+
 > Single-page operating manual. The normative requirements live in
 > [`mba/charter.md`](mba/charter.md); the Beads capability record lives in
 > [`beads/capabilities.md`](beads/capabilities.md). This page covers
@@ -9,14 +13,14 @@
 
 ## 1. Install MBA
 
-MBA's Python package name is **`multiple-beaded-agents`**. The current
-`v0.1.1` release is installable from the public GitHub tag; PyPI publishing
-is a separate future decision. Runtime code is stdlib-only and supports
+MBA's Python package name is **`multiple-beaded-agents`**. Install version
+0.1.2 from its published `v0.1.2` GitHub tag; PyPI publishing is a separate
+future decision. Runtime code is stdlib-only and supports
 Python 3.10+.
 
 | Install type | Command |
 |---|---|
-| Public `v0.1.1` release | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.1` |
+| Version `v0.1.2` | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.2` |
 | Editable local clone | `python -m pip install -e .` |
 
 After install, four console scripts are available:
@@ -41,11 +45,11 @@ MBA runs on top of [Beads](https://github.com/gastownhall/beads); a
 working `bd` CLI is required.
 
 ```bash
-bd version   # should print `bd version 1.0.4 (...)`
+bd version   # must report exact release 1.0.4 or 1.3.0
 ```
 
 If `bd` is missing or the version differs from the validated set
-(`bd 1.0.4`), `mba init` will refuse with `rc=5` and the reason in JSON.
+(`bd 1.0.4` or `bd 1.3.0`), `mba init` will refuse with `rc=5` and the reason in JSON.
 Install or upgrade Beads, then retry.
 
 ## 2. Initialise a target project
@@ -422,7 +426,7 @@ correct one.
 
 | You want to upgrade | Run |
 |---|---|
-| The **tool** (new MBA release from GitHub / future PyPI / a clone) | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.1` (or `python -m pip install -e . --upgrade` from a clone). |
+| The **tool** (new MBA release from GitHub / future PyPI / a clone) | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.2` (or `python -m pip install -e . --upgrade` from a clone). |
 | The **installed content** in a target repo (MBA RULES block / skill changed upstream) | `mba upgrade --dry-run` then `mba upgrade`. |
 
 ### Preview
@@ -473,7 +477,7 @@ upgrade above. The flow is intentionally explicit because of Charter
 
 | You want… | Run |
 |---|---|
-| Current public MBA release | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.1` |
+| MBA version 0.1.2 | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.2` |
 | A specific commit / branch / tag | `pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@<ref>` |
 | Then refresh a target repo's installed content | `mba upgrade --dry-run` (preview) → `mba upgrade` (apply) |
 

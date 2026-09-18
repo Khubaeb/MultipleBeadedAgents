@@ -81,7 +81,7 @@ def _normalise_labels(content: Any) -> list[str]:
     )
 
 
-def _run(argv: list[str], *, cwd: Path | None) -> subprocess.CompletedProcess[str]:
+def _run(argv: list[str], *, cwd: Path | None, env: Mapping[str, str] | None = None) -> subprocess.CompletedProcess[str]:
     """Run ``argv`` via ``subprocess.run`` with ``shell=False``.
 
     ``shell=False`` is the load-bearing guarantee: it means no shell
@@ -89,12 +89,21 @@ def _run(argv: list[str], *, cwd: Path | None) -> subprocess.CompletedProcess[st
     PowerShell / cmd / bash quoting.
     """
 
+    from mba_foundation.preflight import extract_bd_version, capability_conformance_check
+    version = subprocess.run(
+        [argv[0], "version"], cwd=str(cwd) if cwd is not None else None,
+        env=env, capture_output=True, text=True, encoding="utf-8", check=False,
+    )
+    supported, reason = capability_conformance_check(extract_bd_version(version.stdout))
+    if version.returncode or not supported:
+        return subprocess.CompletedProcess(argv, 1, "", "Beads write refused: " + (reason or version.stderr))
     return subprocess.run(
         argv,
         capture_output=True,
         text=True,
         check=False,
         cwd=str(cwd) if cwd is not None else None,
+        env=env, encoding="utf-8",
     )
 
 
@@ -128,6 +137,7 @@ def safe_write_field(
     cwd: Path | None = None,
     bd_binary: str = "bd",
     env: Mapping[str, str] | None = None,
+    actor: str = "Doer",
 ) -> subprocess.CompletedProcess[str]:
     """Write ``content`` to ``bead_id.<field>`` via a newline-safe transport.
 
@@ -141,6 +151,10 @@ def safe_write_field(
       ``--set-labels <label>`` arguments; ``content`` may be a list/tuple
       of strings or a single newline/comma-separated string. Empty
       label lists are refused.
+    * ``actor`` names the actual AI worker/role (default ``Doer`` for
+      existing library callers); the CLI requires an explicit actor.
+      ``env`` is passed to both the version check and write. Unsupported
+      versions return a refusal before mutation.
     * The subprocess is invoked with ``check=False``; the caller decides
       whether to raise on non-zero exit. The default behaviour is to
       return the completed process so callers can inspect stdout/stderr
@@ -148,12 +162,15 @@ def safe_write_field(
       ``assert_field_matches`` (Constraint 22).
     """
 
+    if not actor.strip():
+        raise SafeWriteError("an explicit non-empty AI actor is required")
+
     if field in LIST_FIELDS:
         labels = _normalise_labels(content)
         argv = [bd_binary, "update", bead_id]
         for label in labels:
             argv.extend([LABELS_FLAG, label])
-        return _run(argv, cwd=cwd)
+        return _run([*argv, "--actor", actor], cwd=cwd, env=env)
 
     if field not in FIELD_TO_FLAG:
         raise SafeWriteError(
@@ -174,7 +191,7 @@ def safe_write_field(
         body_file = _write_to_temp_file(content)
         try:
             argv = [bd_binary, "update", bead_id, f"{flag}={body_file}"]
-            return _run(argv, cwd=cwd)
+            return _run([*argv, "--actor", actor], cwd=cwd, env=env)
         finally:
             try:
                 body_file.unlink()
@@ -183,7 +200,7 @@ def safe_write_field(
 
     if transport == "argv":
         argv = [bd_binary, "update", bead_id, flag, content]
-        return _run(argv, cwd=cwd)
+        return _run([*argv, "--actor", actor], cwd=cwd, env=env)
 
     # Defensive: a future field added to FIELD_TO_FLAG without a transport
     # entry must not silently bypass the multiline-safety rule.

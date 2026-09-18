@@ -7,7 +7,7 @@ from mba_foundation import constants
 
 def test_validated_versions_pin_bd_104() -> None:
     assert "1.0.4" in constants.VALIDATED_BD_VERSIONS
-    assert len(constants.VALIDATED_BD_VERSIONS) == 1
+    assert constants.VALIDATED_BD_VERSIONS == {"1.0.4", "1.3.0"}
 
 
 def test_marker_pair_is_verbatim_charter_text() -> None:

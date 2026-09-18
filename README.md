@@ -1,5 +1,9 @@
 # Multiple Beaded Agents (MBA)
 
+> MBA **0.1.2** supports exact Beads releases **1.0.4 and 1.3.0**.
+> MBA **0.1.1** supported **1.0.4 only**. The commands below target the
+> `v0.1.2` Git tag and require that tag to be published.
+
 MBA is a copy-and-use workflow that lets one or more AI sessions work as a
 small project team on top of [Beads](https://github.com/gastownhall/beads).
 
@@ -31,15 +35,15 @@ flowchart LR
 | What is the quality rule? | Every executable Bead needs Doer-vs-Auditor convergence: verified fix or accepted proof. |
 | Does it run by itself? | No. MBA is instruction-driven, not a daemon. It runs when an AI/tool/harness follows the installed instructions. |
 | Can it run invisibly? | Yes, if the chosen harness launches the Orchestrator invisibly. MBA also launches OpenCode Doer/Auditor workers hidden by default. |
-| Is PyPI used now? | No. `v0.1.1` is installable from the public GitHub repo/tag. PyPI is a separate future decision. |
+| Is PyPI used now? | No. Installation uses versioned public GitHub tags. PyPI is a separate future decision. |
 | What is private? | Beads data, `.mba-work`, credentials, local AI-resource config, and dev instruction files stay out of the public repo. |
 
 ## Install MBA
 
-Current public release:
+Install version 0.1.2 from its published Git tag:
 
 ```bash
-python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.1
+python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.2
 ```
 
 Developer install from a clone:
@@ -70,7 +74,7 @@ mba --version
 | Item | Current requirement |
 |---|---|
 | Required CLI | `bd` |
-| Validated version | `bd 1.0.4` |
+| Validated version | `bd 1.0.4` and `bd 1.3.0` |
 | Version policy | Refuse mismatches; no silent Beads upgrade. |
 | Beads install/init | Requires user authority when missing. |
 
@@ -251,7 +255,7 @@ Details: [`docs/beads/capabilities.md`](docs/beads/capabilities.md).
 
 | Need | Command |
 |---|---|
-| Upgrade the MBA tool from GitHub | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.1` |
+| Upgrade the MBA tool from GitHub | `python -m pip install -U git+https://github.com/Khubaeb/MultipleBeadedAgents.git@v0.1.2` |
 | Preview installed-content refresh | `mba upgrade --dry-run` |
 | Apply installed-content refresh | `mba upgrade` |
 | Preview removal | `mba remove --dry-run` |
@@ -288,7 +292,7 @@ If accepted work is waiting only on authority, MBA blocks the Bead, assigns
 | Limit | Status |
 |---|---|
 | Public package index | Not on PyPI yet. Install from GitHub tag. |
-| Beads support | Validated on `bd 1.0.4`; widening requires revalidation. |
+| Beads support | Validated on `bd 1.0.4` and `bd 1.3.0`; widening requires revalidation. |
 | Automatic in-loop resource fallback | Library/CLI exists; full `drive-bead` dispatch wiring remains roadmap. |
 | Token-level live stream | Not promised; captured logs are process/event streams. |
 | Hidden Orchestrator transcript capture | Harness-owned. MBA records MBA milestones and worker artefacts. |

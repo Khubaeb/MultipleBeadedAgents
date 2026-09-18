@@ -30,7 +30,7 @@ python -m mba_runtime first-contact --cwd . --apply-setup
 > installed `mba_runtime` package.
 
 Refuse to proceed when the recorded Beads version is not in the validated set
-`bd 1.0.4`. Record the value before any `bd` write — see Foundation §3 of the
+`bd 1.0.4` and `bd 1.3.0`. Record the value before any `bd` write — see Foundation §3 of the
 project instruction file. If `first-contact` reports missing or incomplete
 AI-resource configuration, use the JSON `recommended_setup_bead` to create
 or update the `MBA setup` task, assign it to `Human`, mark it `blocked`,

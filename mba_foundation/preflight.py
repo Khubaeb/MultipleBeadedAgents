@@ -6,7 +6,7 @@ Acceptance row coverage (Foundation AC #1, AC #2):
   write it to ``.mba-work/<bead>/orchestrator/working.md``, and use it
   to gate every subsequent Bead write. (`docs/mba/charter.md` §10 +
   ``docs/beads/capabilities.md`` Version policy.)
-* Compare the recorded version to the validated set (``bd 1.0.4``) and
+* Compare the recorded version to the validated set (``bd 1.0.4`` and ``bd 1.3.0``) and
   refuse to proceed on mismatch. (capabilities.md Version policy.)
 """
 

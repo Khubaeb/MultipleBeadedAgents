@@ -1,6 +1,6 @@
 # MBA implementation status
 
-Snapshot for release `0.1.1`. Requirements live in [`charter.md`](charter.md).
+Implementation snapshot for version `0.1.2`. Requirements live in [`charter.md`](charter.md).
 
 ## Built
 
@@ -55,8 +55,8 @@ Snapshot for release `0.1.1`. Requirements live in [`charter.md`](charter.md).
 
 | Item | Status |
 |---|---|
-| Current version | `0.1.1` |
-| Public install source | GitHub tag `v0.1.1` |
+| Source version | `0.1.2`; compatibility verified in isolated fixtures |
+| Install target | GitHub tag `v0.1.2`, after publication |
 | PyPI | Not published. |
 | Dev Beads data | Private dev remote only. |
 | Public repo history | Rebuilt as a single public-safe commit for `v0.1.0`. |

@@ -10,8 +10,8 @@ from mba_version import __version__
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
-def test_version_source_is_public_release() -> None:
-    match = re.fullmatch(r"(\d+)\.(\d+)\.(\d+)", __version__)
+def test_version_source_is_release_or_explicit_development_candidate() -> None:
+    match = re.fullmatch(r"(\d+)\.(\d+)\.(\d+)(?:\.dev\d+)?", __version__)
     assert match is not None
     assert int(match.group(1)) == 0
 

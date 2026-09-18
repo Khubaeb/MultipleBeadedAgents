@@ -2067,3 +2067,94 @@ def test_external_dispatch_capture_protocol_can_be_ndjson(
     outcome = runner(brief)
     assert outcome.capture is not None
     assert outcome.capture.protocol == PROTOCOL_NDJSON
+
+
+@pytest.mark.parametrize("refusal", ["user", "foreign", "ambiguous", "session", "transcript", "permission"])
+def test_cleanup_real_default_sink_routes_structured_handoff(monkeypatch, tmp_path, refusal):
+    """Exercise the real renderer/sink; intercept only Beads transport and OS probes."""
+    from dataclasses import replace
+    from mba_runtime import bd_client
+    from mba_runtime.comments import _validate_comment_text
+
+    project = tmp_path / "project"
+    project.mkdir()
+    unrelated = tmp_path / "unrelated"
+    unrelated.mkdir()
+    monkeypatch.chdir(unrelated)
+    calls = []
+    def transport(binary, *, args, cwd, **kwargs):
+        calls.append((binary, list(args), cwd))
+        return subprocess.CompletedProcess([binary, *args], 0, "", "")
+    monkeypatch.setattr(bd_client, "call", transport)
+    worker = _worker()
+    if refusal in {"user", "foreign"}:
+        worker = replace(worker, owner=refusal)
+    if refusal == "ambiguous":
+        worker = replace(worker, session_id=None, ownership_proof="")
+    if refusal == "transcript":
+        worker = replace(worker, transcript_id="orchestrator-transcript")
+    probes = []
+    def alive(pid):
+        probes.append(("alive", pid))
+        assert refusal == "permission", "protected identity reached process probe"
+        return True
+    def kill(pid):
+        probes.append(("kill", pid))
+        assert refusal == "permission", "protected identity reached kill"
+        raise PermissionError("fixture permission refusal")
+    runner = ExternalProcessSessionRunner(
+        dispatch_argv=("not-launched",),
+        authority=AuthorityContext(project_cwd=project, decision_fn=lambda _: pytest.fail("cleanup requested launch authority")),
+        bd_binary="/selected/bd",
+        cleanup_is_alive=alive, cleanup_kill=kill,
+        cleanup_orchestrator_session_id=worker.session_id if refusal == "session" else "orchestrator",
+        cleanup_orchestrator_transcript_id="orchestrator-transcript",
+    )
+    outcome = runner._cleanup_terminal_state(worker)
+    assert outcome.blocked_for_human
+    assert len(calls) == 2
+    assert all(binary == "/selected/bd" and cwd == project.resolve() for binary, _, cwd in calls)
+    comment_args, update_args = calls[0][1], calls[1][1]
+    path = project / ".mba-work/sample-1/orchestrator/cleanup-handoff.md"
+    assert comment_args == ["comments", "add", worker.bead_id, "-f", str(path), "--actor", "Orchestrator"]
+    assert update_args == ["update", worker.bead_id, "--status", "blocked", "--add-label", "human", "--assignee", "Human", "--actor", "Orchestrator"]
+    text = path.read_text(encoding="utf-8")
+    _validate_comment_text(text)
+    assert len(text.splitlines()) == 5 and "cleanup refusal" in text
+    assert not (unrelated / ".mba-work").exists()
+    assert len(probes) == (2 if refusal == "permission" else 0)
+
+
+@pytest.mark.parametrize("wrapper", [False, True])
+def test_cleanup_default_sink_standalone_and_wrapper(monkeypatch, tmp_path, wrapper):
+    from dataclasses import replace
+    from mba_runtime import bd_client
+    from mba_runtime.external_dispatch import cleanup_worker_or_record_block
+    calls = []
+    def transport(binary, *, args, cwd, **kwargs):
+        calls.append((binary, cwd))
+        return subprocess.CompletedProcess([binary, *args], 0, "", "")
+    monkeypatch.setattr(bd_client, "call", transport)
+    monkeypatch.chdir(tmp_path)
+    fn = cleanup_worker_or_record_block if wrapper else cleanup_mba_owned_worker
+    kwargs = {"cwd": tmp_path, "bd_binary": "/chosen/bd"} if wrapper else {}
+    result = fn(replace(_worker(), owner="user"), **kwargs)
+    assert result.blocked_for_human
+    assert calls == [("/chosen/bd" if wrapper else "bd", tmp_path)] * 2
+    assert (tmp_path / ".mba-work/sample-1/orchestrator/cleanup-handoff.md").is_file()
+
+
+@pytest.mark.parametrize("failed_command", ["comments", "update"])
+def test_cleanup_default_sink_does_not_claim_failed_handoff(monkeypatch, tmp_path, failed_command):
+    from dataclasses import replace
+    from mba_runtime import bd_client
+    from mba_runtime.external_dispatch import WorkerCleanupError
+    calls = []
+    def transport(binary, *, args, **kwargs):
+        calls.append(args[0])
+        return subprocess.CompletedProcess([binary, *args], int(args[0] == failed_command), "", "fixture failure")
+    monkeypatch.setattr(bd_client, "call", transport)
+    with pytest.raises(WorkerCleanupError, match="Human handoff failed"):
+        cleanup_mba_owned_worker(replace(_worker(), owner="user"), cwd=tmp_path)
+    assert calls == ["comments", "update"]
+    assert (tmp_path / ".mba-work/sample-1/orchestrator/cleanup-handoff.md").is_file()

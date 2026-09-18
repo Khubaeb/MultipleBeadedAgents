@@ -101,5 +101,44 @@ the charter requires it.
 | Record before write | Run `bd version` before live Beads writes. |
 | Validate before use | Only use behavior proven for the running version. |
 | No silent upgrade | User approval plus revalidation is required. |
-| Current foundation | `bd 1.0.4`. |
+| Current foundation | Exact releases `bd 1.0.4` and `bd 1.3.0`; other versions, including prereleases, are refused. |
 | Advanced-feature reference | `v1.1.0`, conditional only. |
+
+### Compatibility in MBA 0.1.2
+
+The portable core is behavior-tested against exact Beads releases **1.0.4**
+and **1.3.0** on macOS with embedded stores. The shared allowlist feeds both
+Foundation and Runtime; prerelease/build-suffixed and other versions are
+refused. Compatibility evidence does not authorize downstream adoption.
+The release notes for the target are [Beads v1.3.0](https://github.com/gastownhall/beads/releases/tag/v1.3.0).
+
+`tests/test_beads_compatibility.py` exercises real CLI JSON, all primitive
+field transports, explicit worker attribution/assignment, Unicode Markdown
+comments, labels, typed dependencies, ready/block/unblock, cycle rejection,
+and lifecycle status changes. It also migrates a copy of a synthetic native
+1.0.4 store in UTC and restores a separate complete old-native copy. It never
+uses an issue JSONL export as the migration or rollback input.
+
+Native comparisons preserve comment multiplicity without assuming same-second
+ordering. Migration may rekey comment/event IDs, add dependency IDs, rename
+`depends_on_id` to `depends_on_issue_id`, add issue `is_blocked`/`row_lock`
+columns, and refresh issue update timestamps. Full rollback comparisons retain
+original IDs and timestamps. JSON exports alone do not cover auxiliary tables;
+the native-table checks use an explicitly supplied Dolt binary.
+
+The package upgrade fixture starts from public MBA 0.1.1, preserves an outer
+Codex/Claude app override and a synthetic private resource record, and checks
+managed manifest drift. Production migration, remote synchronization, actual
+consumer adoption, Windows execution, and independent review remain separate
+acceptance gates. Earlier Windows CI coverage is not new 1.3.0 evidence.
+
+To run the opt-in contracts, set `MBA_TEST_BD_104` and `MBA_TEST_BD_130` to
+absolute exact-version binaries, `MBA_TEST_DOLT` to the inspection binary,
+`MBA_TEST_PUBLIC_BASELINE` to a read-only public 0.1.1 source checkout, and
+`MBA_TEST_WORKSPACE_ROOT` to a disposable directory outside every Beads
+ancestor. Run `python -m pytest tests/test_beads_compatibility.py`. Missing
+fixture configuration is a skip, never evidence of compatibility. Use an
+isolated test environment; the root fixture clears inherited Beads/Dolt/Git
+configuration and uses a temporary home, UTC, no telemetry, and disabled
+backup/export settings. No production board or private resource record is a
+test input. All source/package publication remains subject to review.

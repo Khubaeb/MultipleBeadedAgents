@@ -145,6 +145,8 @@ def test_round_trip_via_stub_when_bd_absent(tmp_path: Path, monkeypatch) -> None
     captured: dict[str, Any] = {}
 
     def fake_write_run(argv, *args, **kwargs):  # type: ignore[no-untyped-def]
+        if argv[1:] == ["version"]:
+            return subprocess.CompletedProcess(argv, 0, "bd version 1.0.4", "")
         captured["argv"] = argv
         return subprocess.CompletedProcess(
             args=argv, returncode=0, stdout="", stderr=""

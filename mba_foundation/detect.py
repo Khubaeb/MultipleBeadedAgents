@@ -231,7 +231,17 @@ def install_or_initialize(
             ),
         )
 
-    cmd: list[str] = [bd_binary, "init", "--non-interactive"]
+    from .preflight import run_bd_version, extract_bd_version, capability_conformance_check
+    try:
+        supported, reason = capability_conformance_check(
+            extract_bd_version(run_bd_version(bd_binary, cwd))
+        )
+    except FileNotFoundError as exc:
+        supported, reason = False, str(exc)
+    if not supported:
+        return subprocess.CompletedProcess([bd_binary, "init"], 1, "", reason)
+
+    cmd: list[str] = [bd_binary, "--actor", "Orchestrator", "init", "--non-interactive"]
     if prefix:
         cmd.extend(["--prefix", prefix])
     cmd.extend(init_args)
