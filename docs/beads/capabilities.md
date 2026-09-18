@@ -104,6 +104,29 @@ the charter requires it.
 | Current foundation | Exact releases `bd 1.0.4` and `bd 1.3.0`; other versions, including prereleases, are refused. |
 | Advanced-feature reference | `v1.1.0`, conditional only. |
 
+### Version-gate hardening in 0.1.3
+
+The 0.1.3 candidate retains exact Beads **1.0.4** and **1.3.0** support from
+the completed 0.1.2 release. The runtime wrapper now validates the selected
+executable's version for every command except a small set of known queries:
+`version`, `show`, `list`, `ready`, `blocked`, `search`, `dep list`, and
+`dep cycles`. Bare invocation and standalone `--help`, `-h`, and `--version`
+also remain available without a supported-version check.
+
+Leading `--actor VALUE` and `--actor=VALUE` retain query recognition; original
+arguments are forwarded unchanged. Other leading global options and unlisted
+queries (including comments listing) conservatively require a supported
+version. Thus, on an unsupported version, use the listed query forms for
+recovery. Unknown and future commands can no longer bypass validation merely
+because they are absent from a write-verb list. This is a bounded classifier,
+not a general CLI parser or a guarantee against future mutating options added
+to an existing query verb.
+
+The label-write follow-up adds regression coverage only. On supported versions,
+the existing writer already performs one version probe and one update per
+logical write, including multiple labels. No production optimization or speedup is claimed. Release
+preparation does not itself publish 0.1.3 or authorize downstream adoption.
+
 ### Compatibility in MBA 0.1.2
 
 The portable core is behavior-tested against exact Beads releases **1.0.4**

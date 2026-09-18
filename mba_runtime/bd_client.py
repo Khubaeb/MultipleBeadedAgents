@@ -195,18 +195,24 @@ def call(
     in the inherited PATH — never ``<evil.py>``.
     """
 
-    # Every runtime write surface (including direct setup/handoff calls)
-    # checks the actual selected executable. Reads remain available for recovery.
+    # Only known query commands bypass the version gate, so a new write verb
+    # (or an unrecognised argument layout) cannot silently skip validation.
+    # Keep runtime recovery reads available even on unsupported versions.
+    # This is deliberately not a general bd argument parser: other leading
+    # global options require validation, even when followed by a query.
     command_args = list(args)
-    while command_args and command_args[0].startswith("--actor"):
+    while command_args and (
+        command_args[0] == "--actor" or command_args[0].startswith("--actor=")
+    ):
         flag = command_args.pop(0)
         if "=" not in flag and command_args:
             command_args.pop(0)
     command = command_args[0] if command_args else ""
-    writes = command in {"create", "update", "close", "reopen", "init", "remember"}
-    writes |= command == "comments" and command_args[1:2] == ["add"]
-    writes |= command == "dep" and command_args[1:2] in (["add"], ["remove"])
-    if writes:
+    known_read = command in {"version", "show", "list", "ready", "blocked", "search"}
+    known_read |= command == "dep" and command_args[1:2] in (["list"], ["cycles"])
+    # Bare invocation and standalone help/version flags do not open a write path.
+    known_read |= not command_args or command_args in (["--help"], ["-h"], ["--version"])
+    if not known_read:
         from mba_foundation.preflight import extract_bd_version, capability_conformance_check
         version = call(bd_binary, args=["version"], cwd=cwd, env=env)
         supported, reason = capability_conformance_check(extract_bd_version(version.stdout))

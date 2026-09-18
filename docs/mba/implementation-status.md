@@ -1,6 +1,6 @@
 # MBA implementation status
 
-Implementation snapshot for version `0.1.2`. Requirements live in [`charter.md`](charter.md).
+Implementation snapshot for version `0.1.3`. Requirements live in [`charter.md`](charter.md).
 
 ## Built
 
@@ -51,12 +51,20 @@ Implementation snapshot for version `0.1.2`. Requirements live in [`charter.md`]
 | Public mirror checks | No private files; no Beads Dolt ref; public-safe source subset only. |
 | Downstream install check | Install from public GitHub tag; no editable dev link. |
 
+## 0.1.3 patch scope
+
+The completed 0.1.2 release added exact Beads 1.3.0 support alongside 1.0.4.
+The 0.1.3 candidate hardens version validation for unknown runtime commands;
+see the [query and refusal boundary](../beads/capabilities.md#version-gate-hardening-in-013).
+Additional label-write tests preserve the existing one-probe/one-update
+behavior; they introduce no production optimization or speedup.
+
 ## Release boundary
 
 | Item | Status |
 |---|---|
-| Source version | `0.1.2`; compatibility verified in isolated fixtures |
-| Install target | GitHub tag `v0.1.2`, after publication |
+| Source version | `0.1.3`; compatibility verified in isolated fixtures |
+| Install target | GitHub tag `v0.1.3`, after publication |
 | PyPI | Not published. |
 | Dev Beads data | Private dev remote only. |
 | Public repo history | Rebuilt as a single public-safe commit for `v0.1.0`. |

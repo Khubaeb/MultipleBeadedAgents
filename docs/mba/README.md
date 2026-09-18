@@ -102,7 +102,7 @@ python -m mba_runtime first-contact --cwd . --apply-setup
 
 | Item | Value |
 |---|---|
-| Source version | `0.1.2` |
-| Install target | GitHub tag `v0.1.2`, after publication |
+| Source version | `0.1.3` |
+| Install target | GitHub tag `v0.1.3`, after publication |
 | Package name | `multiple-beaded-agents` |
 | PyPI | Not published yet. |
